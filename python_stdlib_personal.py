@@ -5,7 +5,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko@gmail.com>
 # Created: Sat Mar 28, 2015
-# Version: 20150328
+# Version: 20150522
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -1087,3 +1087,24 @@ def join_path_list(path_list,delimeter=PATH_DELIMETER):
     else:
         path_string = delimeter.join(path_list)
         return path_string
+
+# TODO: more docs!!!
+def read_posix_regexp(path):
+    """Generally only converts those regexps that have been found to be
+needed."""
+    firstline=True
+    regexp=''
+    fh = open(path,'r')
+    for line in fh:
+        if firstline:
+            regexp+=line.strip().replace('\\\\','\\')
+            firstline=False
+        else:
+            regexp+=('|'+line.strip()).replace('\\\\','\\')
+    return regexp
+
+def check_none_strip(string):
+    if string == None:
+        return ''
+    else:
+        return string.strip()
