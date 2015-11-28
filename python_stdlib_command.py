@@ -3,8 +3,6 @@
 import string
 import argparse
 
-DASH_TRANSLATE = string.maketrans('-','_')
-
 def main_command(subcommand_prefix,global_variables):
     # build the arguments
     parser = argparse.ArgumentParser(description='')
