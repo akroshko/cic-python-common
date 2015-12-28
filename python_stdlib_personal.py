@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """A standard set of utility and system administration functions."""
 
 # Copyright (C) 2015 Andrew Kroshko, all rights reserved.
@@ -30,6 +31,7 @@ import struct
 import types
 import time
 import getpass
+import inspect
 import string
 import subprocess
 import tempfile
@@ -41,10 +43,13 @@ except ImportError:
     pass
 
 # make a translation table for comparing paths together
+# TODO: can I put these into constants?
 BACKSLASH_TRANSLATE = string.maketrans('\\','/')
 SLASH_TRANSLATE = string.maketrans('/','\\')
 DASH_TRANSLATE = string.maketrans('-','_')
 PATH_DELIMETER = os.pathsep
+
+from python_stdlib_constants import BWhite,White,BRed,Red,BYellow,Yellow,BGreen,Green,On_Blue,On_Purple,Color_Off
 
 def int64_base64(n):
     """
@@ -906,6 +911,31 @@ def call_native_background_capture(command,hosts=None,**kwds):
                             bufsize=0,
                             **kwds)
 
+
+@CheckHosts('hosts')
+@MakeList(0)
+def call_bash_env(command,hosts=None,**kwds):
+    """
+    Call using the standard subprocess call along with a bash shell.
+
+    **Arguments**:
+      command : list of strings:
+        A list of command arguments used by subprocess.Popen.
+
+      hosts :
+        Used by decorator or dummy argument.
+      **kwds :
+        Keywords to pass to Popen.
+
+    **Returns**:
+      subprocess.Popen :
+        The subprocess.Popen object from calling the command.
+    """
+    # TODO shlex?
+    # TODO other shells?
+    #      merge lists?
+    return subprocess.call(['bash','--init-file',os.path.expanduser('~/.bash_env'),'-c'] + [' '.join(command)],**kwds)
+
 @CheckHosts('hosts')
 @MakeList(0)
 def call_bash(command,hosts=None,**kwds):
@@ -1139,3 +1169,38 @@ def check_none_strip(string):
         return ''
     else:
         return string.strip()
+
+# TODO: improve how colors work in interactive functions
+def yell(string):
+    frame = inspect.stack()[1]
+    module = inspect.getmodule(frame[0])
+    if hasattr(module,'__file__') and module.__file__:
+        sys.stderr.write("%s%s: %s%s%s\n" % (BRed,os.path.basename(module.__file__),Red,string,Color_Off))
+    else:
+        sys.stderr.write("%s%s: %s%s%s\n" % (BRed,'python',Red,string,Color_Off))
+
+def warn(string):
+    frame = inspect.stack()[1]
+    module = inspect.getmodule(frame[0])
+    if hasattr(module,'__file__') and module.__file__:
+        sys.stderr.write("%s%s: %s%s%s\n" % (BYellow,os.path.basename(module.__file__),Yellow,string,Color_Off))
+    else:
+        sys.stderr.write("%s%s: %s%s%s\n" % (BYellow,'python',Yellow,string,Color_Off))
+
+def msg(string):
+    frame = inspect.stack()[1]
+    module = inspect.getmodule(frame[0])
+    if hasattr(module,'__file__') and module.__file__:
+        sys.stderr.write("%s%s: %s%s%s\n" % (BGreen,os.path.basename(module.__file__),Green,string,Color_Off))
+    else:
+        sys.stderr.write("%s%s: %s%s%s\n" % (BGreen,'python',Green,string,Color_Off))
+
+def h1(string):
+    newstring = "==== %s ================================================================================" % string
+    newstring = newstring[0:80]
+    sys.stderr.write("%s%s%s%s\n" % (White,On_Blue,newstring,Color_Off))
+
+def h2(string):
+    newstring = "---- %s ------------------------------------------------------------" % string
+    newstring = newstring[0:60]
+    sys.stderr.write("%s%s%s%s\n" % (White,On_Purple,newstring,Color_Off))

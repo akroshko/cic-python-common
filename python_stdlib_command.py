@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #####################################################################################
 ## Support for a hybrid command line argument parser/function call that runs commands
 import string
