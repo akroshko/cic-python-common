@@ -1151,8 +1151,7 @@ def join_path_list(path_list,delimeter=PATH_DELIMETER):
 
 # TODO: more docs!!!
 def read_posix_regexp(path):
-    """Generally only converts those regexps that have been found to be
-needed."""
+    """Generally only converts those regexps that have been found to be needed."""
     firstline=True
     regexp=''
     fh = open(path,'r')
