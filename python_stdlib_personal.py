@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """A standard set of utility and system administration functions."""
 
-# Copyright (C) 2015 Andrew Kroshko, all rights reserved.
+# Copyright (C) 2015-2016 Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko@gmail.com>
 # Created: Sat Mar 28, 2015
-# Version: 20150522
+# Version: 20160130
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
