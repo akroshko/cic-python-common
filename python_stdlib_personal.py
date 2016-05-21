@@ -49,7 +49,7 @@ SLASH_TRANSLATE = string.maketrans('/','\\')
 DASH_TRANSLATE = string.maketrans('-','_')
 PATH_DELIMETER = os.pathsep
 
-from python_stdlib_constants import BWhite,White,BRed,Red,BYellow,Yellow,BGreen,Green,On_Blue,On_Purple,Color_Off
+from python_stdlib_constants import BWhite,White,BRed,Red,BYellow,Yellow,BGreen,Green,On_Blue,On_Purple,On_Cyan,Color_Off
 
 def int64_base64(n):
     """
@@ -1197,9 +1197,13 @@ def msg(string):
 def h1(string):
     newstring = "==== %s ================================================================================" % string
     newstring = newstring[0:80]
-    sys.stderr.write("%s%s%s%s\n" % (White,On_Blue,newstring,Color_Off))
+    sys.stderr.write("%s%s%s%s\n" % (BWhite,On_Blue,newstring,Color_Off))
 
 def h2(string):
     newstring = "---- %s ------------------------------------------------------------" % string
     newstring = newstring[0:60]
+    sys.stderr.write("%s%s%s%s\n" % (BWhite,On_Cyan,newstring,Color_Off))
+
+def h3(string):
+    newstring = "---- %s" % string
     sys.stderr.write("%s%s%s%s\n" % (White,On_Purple,newstring,Color_Off))
