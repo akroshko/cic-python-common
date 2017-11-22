@@ -25,6 +25,19 @@
 
 TICTOCLABELS={}
 
+__all__ = ['All']
+
+class All(object):
+    """ Provide a decorator that add a class or method to the __all__ variable. """
+    def __init__(self,global_dict):
+        self.global_dict = global_dict
+
+    def __call__(self,obj):
+        if not self.global_dict.has_key('__all__'):
+            self.global_dict['__all__'] = []
+        self.global_dict['__all__'].append(obj.__name__)
+        return obj
+
 def pymath_import_module(theglobals,thelocals,module_name,module_as):
     themodule = __import__(module_name,theglobals,thelocals)
     theglobals[module_as] = themodule
@@ -46,21 +59,6 @@ def toc(label=None):
     else:
         thetime = time.time() - TICTOCLABELS[label]
         print "Timing " + label + ": ", thetime
-
-@All(globals())
-def pymath_db_setup(theglobals,thelocals):
-    # TODO: open database and add things to globals
-    # TODO: how does this go?
-    dbhostname = "localhost"
-    connection = None
-    cursor = None
-    # TODO: need a better function for this that does not comprimise privacy
-    connection,cursor=open_database(CONNECTION,CURSOR)
-    theglobals['CONNECTION'] = CONNECTION
-    theglobals['CURSOR'] = CURSOR
-    # TODO: an all decorator and other utilities
-    # TODO: need some nice functions for stuff....
-
 
 @All(globals())
 def pymath_default_imports(theglobals,thelocals):
@@ -91,7 +89,4 @@ def pymath_default_imports(theglobals,thelocals):
     # mpl.use('Agg')
     # from matplotlib.backends.backend_pdf import PdfPages
 
-@All(globals())
-def pymath_default_imports_and_db_setup(theglobals,thelocals):
-    pymath_default_imports(theglobals,thelocals)
-    pymath_db_setup(theglobals,thelocals)
+# TODO: move pymath_default_imports_and_open_database in here
