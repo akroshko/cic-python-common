@@ -38,9 +38,13 @@ class All(object):
         self.global_dict['__all__'].append(obj.__name__)
         return obj
 
-def pymath_import_module(theglobals,thelocals,module_name,module_as):
-    themodule = __import__(module_name,theglobals,thelocals)
-    theglobals[module_as] = themodule
+def pymath_import_module(theglobals,thelocals,module_name,module_as,submodule=None):
+    if submodule==None:
+        themodule = __import__(module_name,theglobals,thelocals)
+        theglobals[module_as] = themodule
+    else:
+        themodule = __import__(module_name,theglobals,thelocals,[submodule])
+        theglobals[module_as] = getattr(themodule,submodule)
 
 @All(globals())
 def tic(label=None):
@@ -85,7 +89,7 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'numpy','np')
     pymath_import_module(theglobals,thelocals,'scipy','sp')
     pymath_import_module(theglobals,thelocals,'matplotlib','mpl')
-    pymath_import_module(theglobals,thelocals,'matplotlib.pyplot','plt')
+    pymath_import_module(theglobals,thelocals,'matplotlib','plt',submodule='pyplot')
     # mpl.use('Agg')
     # from matplotlib.backends.backend_pdf import PdfPages
 
