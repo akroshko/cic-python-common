@@ -82,8 +82,10 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'lxml','lxml')
     # TODO: lxml.html
     pymath_import_module(theglobals,thelocals,'json','json')
-    pymath_import_module(theglobals,thelocals,'subprocess','subprocess')
     pymath_import_module(theglobals,thelocals,'re','re')
+    pymath_import_module(theglobals,thelocals,'subprocess','subprocess')
+    pymath_import_module(theglobals,thelocals,'multiprocessing','multiprocessing')
+    pymath_import_module(theglobals,thelocals,'multiprocessing','Pool',submodule='Pool')
     pymath_import_module(theglobals,thelocals,'psycopg2','psycopg2')
     # TODO: psycopg2.extras
     pymath_import_module(theglobals,thelocals,'numpy','np')
