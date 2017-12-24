@@ -65,12 +65,36 @@ def toc(label=None):
         print "Timing " + label + ": ", thetime
 
 @All(globals())
+def filter_list_of_tuples_invalid(list_of_tuples):
+    """Filter out in invalid values.  This generally for plotting, so
+things that are unplottable like None are filtered out.
+TODO: nan and inf?
+      raise special exception if non-scalar too?"""
+    return [t for t in list_of_tuples if t[0] is not None and t[1] is not None]
+
+# TODO: possibily work with tuples
+@All(globals())
+def make_axis_symlog_y(ax,ythresh,xmin,xmax,ymin,ymax):
+    if ymin < -ythresh or ymax > ythresh:
+        print "Setting symlog with ", ythresh
+        ax.set_yscale('symlog',linthreshy=ythresh)
+        if ymax > ythresh:
+            print "Top symlog"
+            ax.hlines( ythresh,xmin,xmax,color='r')
+        if ymin < -ythresh:
+            print "Bottom symlog"
+            ax.hlines(-ythresh,xmin,xmax,color='r')
+
+@All(globals())
 def pymath_default_imports(theglobals,thelocals):
     # TODO: don't need to return anything yet
     pymath_import_module(theglobals,thelocals,'copy','copy')
     pymath_import_module(theglobals,thelocals,'os','os')
     # TODO: from pprint import pprint
     pymath_import_module(theglobals,thelocals,'pprint','pprint')
+    pymath_import_module(theglobals,thelocals,'pprint','pp',submodule='pprint')
+    # TODO: import a nice re matcher
+    pymath_import_module(theglobals,thelocals,'re','re')
     pymath_import_module(theglobals,thelocals,'socket','socket')
     pymath_import_module(theglobals,thelocals,'datetime','datetime')
     pymath_import_module(theglobals,thelocals,'pycurl','pycurl')

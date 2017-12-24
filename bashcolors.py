@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys
+import os,sys
 terse = "-t" in sys.argv[1:] or "--terse" in sys.argv[1:]
 write = sys.stdout.write
 for i in range(2 if terse else 10):

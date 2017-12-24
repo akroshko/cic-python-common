@@ -1,7 +1,6 @@
 #!/usr/bin/python
+import os,sys
 import math as m
-import os
-import sys
 
 # based on mouseclick.sh from https://sourceforge.net/projects/xulpdftex/
 # TODO: add a license, respect original

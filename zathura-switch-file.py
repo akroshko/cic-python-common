@@ -21,9 +21,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see http://www.gnu.org/licenses/.
 
-import os
+import os,sys
 import re
-import sys
 import dbus
 
 # TODO: make this a system wide importable constant
