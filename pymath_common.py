@@ -62,10 +62,10 @@ def tic(label=None):
 def toc(label=None):
     if label == None:
         thetime = time.time() - TICTOCLABELS['default']
-        print "Timing default: ", thetime
+        print ("Timing default: %.2fs" % thetime)
     else:
         thetime = time.time() - TICTOCLABELS[label]
-        print "Timing " + label + ": ", thetime
+        print "Timing " + label + (": %.2fs" % thetime)
 
 @All(globals())
 def filter_list_of_tuples_invalid(list_of_tuples):
