@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso-8859-15 -*-
 """A standard set of utility and system administration functions."""
 # DO NOT EDIT DIRECTLY IF NOT IN python-stdlib-personal, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/python-stdlib-personal
 
@@ -129,12 +130,26 @@ def pymath_default_imports(theglobals,thelocals):
 # TODO: move pymath_default_imports_and_open_database in here
 
 ################################################################################
+## some program utilities
+@All(globals())
+def check_valid_flags(argv,list_of_flags=[],mutually_exclusive_flags=[]):
+    "This is a sanity check for simple flags.  Generally so long
+experiments do not fail because of minor mispellings.  For more
+sophisticated use argparse is recommended."
+    # TODO: maybe I want to just use sys.argv?
+    # TODO: mutually exclusive flags should be tuples
+    # TODO: should this actually call argparse?
+    for a in argv:
+        if a not in list_of_flags:
+            raise RuntimeError("Improper arguments or flags given!!!")
+
+################################################################################
 ## some array utilities
 
 @All(globals())
 def compact_array_print(arr):
     # TODO: string are immutable, this is not efficient...
-    thestring = ""
+    thestring = u''
     # TODO: do not use a for loop, make something that works well with various boolean things
     # TODO: have something that gives relative magnitude (logarithmic too)
     for i in xrange(arr.shape[1]):
@@ -142,6 +157,6 @@ def compact_array_print(arr):
             if arr[i,j] > 0.5:
                 thestring += '##'
             else:
-                thestring += '..'
+                thestring += '  '
         thestring += '\n'
     return thestring
