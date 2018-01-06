@@ -133,9 +133,9 @@ def pymath_default_imports(theglobals,thelocals):
 ## some program utilities
 @All(globals())
 def check_valid_flags(argv,list_of_flags=[],mutually_exclusive_flags=[]):
-    "This is a sanity check for simple flags.  Generally so long
+    """This is a sanity check for simple flags.  Generally so long
 experiments do not fail because of minor mispellings.  For more
-sophisticated use argparse is recommended."
+sophisticated use argparse is recommended."""
     # TODO: maybe I want to just use sys.argv?
     # TODO: mutually exclusive flags should be tuples
     # TODO: should this actually call argparse?
