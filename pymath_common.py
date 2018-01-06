@@ -143,6 +143,13 @@ sophisticated use argparse is recommended."""
         if a not in list_of_flags:
             raise RuntimeError("Improper arguments or flags given!!!")
 
+@All(globals())
+def print_full_exception(message=None):
+    if message:
+        print message
+    traceback.print_exc()
+
+
 ################################################################################
 ## some array utilities
 
