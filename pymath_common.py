@@ -27,6 +27,8 @@
 import os,sys
 import time
 
+import numpy as np
+
 TICTOCLABELS={}
 
 __all__ = ['All']
@@ -149,20 +151,30 @@ def print_full_exception(message=None):
         print message
     traceback.print_exc()
 
+@All(globals())
+def timestamp_now():
+    import time
+    import datetime
+    ts = time.time()
+    return datetime.datetime.fromtimestamp(ts).strftime('%Y%m%dT%H%M%S')
 
 ################################################################################
 ## some array utilities
 
 @All(globals())
-def compact_array_print(arr):
+def compact_array_print(arr,threshold=0.5,levels=np.array([])):
     # TODO: string are immutable, this is not efficient...
+    # TODO: this is mostly for debugging right now
+    # TODO: implement levels....
     thestring = u''
     # TODO: do not use a for loop, make something that works well with various boolean things
     # TODO: have something that gives relative magnitude (logarithmic too)
     for i in xrange(arr.shape[1]):
         for j in xrange(arr.shape[0]):
-            if arr[i,j] > 0.5:
+            if arr[i,j] > threshold:
                 thestring += '##'
+                # thestring += u'\u2588\u2588'
+                # thestring += u'\u2591\u2591'
             else:
                 thestring += '  '
         thestring += '\n'
