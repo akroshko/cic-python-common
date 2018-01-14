@@ -26,6 +26,7 @@
 
 import os,sys
 import time
+import traceback
 
 import numpy as np
 
@@ -147,6 +148,7 @@ sophisticated use argparse is recommended."""
 
 @All(globals())
 def print_full_exception(message=None):
+    # TODO: can I print my e automatically?
     if message:
         print message
     traceback.print_exc()
