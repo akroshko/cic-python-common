@@ -181,3 +181,22 @@ def compact_array_print(arr,threshold=0.5,levels=np.array([])):
                 thestring += '  '
         thestring += '\n'
     return thestring
+
+@All(globals())
+def compact_integer_array_print(arr):
+    thestring = ''
+    astart=ord('a')
+    Astart=ord('A')
+    for i in xrange(arr.shape[1]):
+        for j in xrange(arr.shape[0]):
+            if arr[i,j] == -1:
+                thestring += '  '
+            else:
+                if arr[i,j] > 25:
+                    thechar = chr(Astart+arr[i,j]-26)
+                else:
+                    thechar = chr(astart+arr[i,j])
+                thestring += thechar
+                thestring += thechar
+        thestring += '\n'
+    return thestring
