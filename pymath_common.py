@@ -147,6 +147,19 @@ sophisticated use argparse is recommended."""
             raise RuntimeError("Improper arguments or flags given!!! Specifically: ",a)
 
 @All(globals())
+def extract_flags_selecting_dictionary_key(argv,thedict):
+    select_key=None
+    for thearg in argv:
+        if thearg.startswith('--'):
+            for k in thedict:
+                if thearg[2:] == k:
+                    if select_key is None:
+                        select_key=thearg[2:]
+                    else:
+                        raise Exception("Duplicate matching select keys!!!")
+    return select_key
+
+@All(globals())
 def print_full_exception(message=None):
     # TODO: can I print my e automatically?
     if message:
