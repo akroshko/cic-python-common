@@ -8,7 +8,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko@gmail.com>
 # Created: Wed Nov 15, 2017
-# Version: 20180103
+# Version: 20180129
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ TODO: nan and inf?
 
 # TODO: possibily work with tuples
 @All(globals())
-def make_axis_symlog_y(ax,ythresh,xmin,xmax,ymin,ymax):
+def ax_make_symlog_y(ax,ythresh,xmin,xmax,ymin,ymax):
     if ymin < -ythresh or ymax > ythresh:
         print "Setting symlog with ", ythresh
         ax.set_yscale('symlog',linthreshy=ythresh)
@@ -91,6 +91,26 @@ def make_axis_symlog_y(ax,ythresh,xmin,xmax,ymin,ymax):
         if ymin < -ythresh:
             print "Bottom symlog"
             ax.hlines(-ythresh,xmin,xmax,color='r')
+
+@All(globals())
+def ax_make_nice_grid(ax):
+    ""
+    # TODO: do i want this here
+    axarr.minorticks_on()
+    ax.grid(True,which='major',linestyle='dashed',linewidth=1.0)
+    ax.grid(True,which='minor',linestyle='dotted',linewidth=0.4)
+
+@All(globals())
+def fig_save_fig(fig,fullpath,dpi=150):
+    the_directory=os.path.dirname(fullpath)
+    if not os.path.exists(path):
+        # Hack to make this function thread-safe
+        try:
+            os.makedirs(path)
+        except OSError:
+            pass
+    fig.savefig(fig,fullpath,dpi=dpi,bbox_inches='tight')
+    # TODO: close fig....
 
 @All(globals())
 def pymath_default_imports(theglobals,thelocals):
@@ -161,6 +181,7 @@ def extract_flags_selecting_dictionary_key(argv,thedict):
 
 @All(globals())
 def print_full_exception(message=None):
+    print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     # TODO: can I print my e automatically?
     if message:
         print message
@@ -198,17 +219,13 @@ def compact_array_print(arr,threshold=0.5,levels=np.array([])):
 @All(globals())
 def compact_integer_array_print(arr):
     thestring = ''
-    astart=ord('a')
-    Astart=ord('A')
+    charstart=ord('A')
     for i in xrange(arr.shape[1]):
         for j in xrange(arr.shape[0]):
             if arr[i,j] == -1:
                 thestring += '  '
             else:
-                if arr[i,j] > 25:
-                    thechar = chr(Astart+arr[i,j]-26)
-                else:
-                    thechar = chr(astart+arr[i,j])
+                thechar = chr(charstart+arr[i,j])
                 thestring += thechar
                 thestring += thechar
         thestring += '\n'
