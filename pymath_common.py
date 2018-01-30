@@ -40,13 +40,13 @@ class All(object):
         self.global_dict = global_dict
 
     def __call__(self,obj):
-        if not self.global_dict.has_key('__all__'):
+        if '__all__' not in self.global_dict:
             self.global_dict['__all__'] = []
         self.global_dict['__all__'].append(obj.__name__)
         return obj
 
 def pymath_import_module(theglobals,thelocals,module_name,module_as,submodule=None):
-    if submodule==None:
+    if submodule is None:
         themodule = __import__(module_name,theglobals,thelocals)
         theglobals[module_as] = themodule
     else:
@@ -56,7 +56,7 @@ def pymath_import_module(theglobals,thelocals,module_name,module_as,submodule=No
 @All(globals())
 def tic(label=None):
     global TICTOCLABELS
-    if label == None:
+    if label is None:
         TICTOCLABELS['default'] = time.time()
     else:
         TICTOCLABELS[label] = time.time()
@@ -64,7 +64,7 @@ def tic(label=None):
 # TODO: use a file-local label
 @All(globals())
 def toc(label=None):
-    if label == None:
+    if label is None:
         thetime = time.time() - TICTOCLABELS['default']
         print ("Timing default: %.2fs" % thetime)
     else:
@@ -96,20 +96,20 @@ def ax_make_symlog_y(ax,ythresh,xmin,xmax,ymin,ymax):
 def ax_make_nice_grid(ax):
     ""
     # TODO: do i want this here
-    axarr.minorticks_on()
+    ax.minorticks_on()
     ax.grid(True,which='major',linestyle='dashed',linewidth=1.0)
     ax.grid(True,which='minor',linestyle='dotted',linewidth=0.4)
 
 @All(globals())
 def fig_save_fig(fig,fullpath,dpi=150):
-    the_directory=os.path.dirname(fullpath)
+    path=os.path.dirname(fullpath)
     if not os.path.exists(path):
         # Hack to make this function thread-safe
         try:
             os.makedirs(path)
         except OSError:
             pass
-    fig.savefig(fig,fullpath,dpi=dpi,bbox_inches='tight')
+    fig.savefig(fullpath,dpi=dpi,bbox_inches='tight')
     # TODO: close fig....
 
 @All(globals())
