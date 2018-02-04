@@ -806,7 +806,7 @@ def check_process(process_name):
        names.
 
     """
-    processes = psutil.get_process_list()
+    processes = list(psutil.process_iter())
     process_names = [p.name for p in processes]
     return filter(lambda s: process_name in s, process_names)
 
