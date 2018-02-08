@@ -8,7 +8,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko@gmail.com>
 # Created: Wed Nov 15, 2017
-# Version: 20180129
+# Version: 20180208
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,9 @@
 # along with this program. If not, see http://www.gnu.org/licenses/.
 
 import os,sys
+import compileall
+import subprocess
+import re
 import time
 import traceback
 
@@ -193,6 +196,58 @@ def timestamp_now():
     import datetime
     ts = time.time()
     return datetime.datetime.fromtimestamp(ts).strftime('%Y%m%dT%H%M%S')
+
+check_orphaned_compiled_patterns=[('.pyc', '.py'),
+                                  ('.sage.py','.sage'),
+                                  ('.sage.pyc','.sage')]
+
+################################################################################
+## some project utilties
+
+# TODO: this can take a long time
+@All(globals())
+def check_python_sage_project_sanity(project_path):
+    "Helpful function to check sanity of python and sage project."
+    # TODO: want my proper expand_all
+    project_path=os.path.expanduser(project_path)
+    for path,subdirs,files in os.walk(project_path):
+        for filename in files:
+            # check that there are no orphaned compiled functions
+            # TODO: does not work if pyc or pyx or distributed seperately
+            for compiled_pattern,base_pattern in check_orphaned_compiled_patterns:
+                if filename.endswith(compiled_pattern):
+                    if not os.path.exists(os.path.join(path,filename[:-len(compiled_pattern)]+base_pattern)):
+                        # TODO: ask to delete
+                        print "Orphaned compiled file: ", os.path.join(path,filename)
+                        return 1
+    # check all python scripts
+    # TODO: make sure regex works, still listing these directories...
+    rc = compileall.compile_dir(project_path,rx=re.compile('.*/(\.git|\.svn|\.ropeproject).*'))
+    if rc != 1:
+        print "Python compile return code: ",rc
+        return 1
+    # looping twice because orphaned is faster and should be fixed first
+    # this is special for sage, might want to double compile python because that is fast
+    for path,subdirs,files in os.walk(project_path):
+        for filename in files:
+            # if filename.endswith('.sage'):
+            #     # should be fairly lightweight
+            #     from sage.repl.preparse import preparse_file_named
+            #     print "Preparsing: ", os.path.join(path,filename)
+            #     preparse_file_named(os.path.join(path,filename))
+            # check for things compiling
+            if filename.endswith('.sage'):
+                command_list=['sage','-preparse',os.path.join(path,filename)]
+                if (not (os.path.exists(os.path.join(path,filename)+'.py'))) or (os.path.getmtime(os.path.join(path,filename)) > os.path.getmtime(os.path.join(path,filename)+'.py')):
+                    # TODO: check timestamps for sage preparser
+                    print command_list
+                    p = subprocess.Popen(command_list)
+                    p.communicate()
+                    if p.returncode != 0:
+                        print "Failed to compile: ", os.path.join(path,filename)
+                        return 1
+            # TODO: handle python 3 etc
+    return 0
 
 ################################################################################
 ## some array utilities
