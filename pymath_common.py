@@ -26,9 +26,11 @@
 
 import os,sys
 import compileall
-import subprocess
+from pprint import pprint as PP
 import re
+import subprocess
 import time
+from time import time as TT
 import traceback
 
 import numpy as np
@@ -60,19 +62,19 @@ def pymath_import_module(theglobals,thelocals,module_name,module_as,submodule=No
 def tic(label=None):
     global TICTOCLABELS
     if label is None:
-        TICTOCLABELS['default'] = time.time()
+        TICTOCLABELS['default'] = TT()
     else:
-        TICTOCLABELS[label] = time.time()
+        TICTOCLABELS[label] = TT()
 
 # TODO: use a file-local label
 @All(globals())
-def toc(label=None):
+def toc(label=None,level=0):
     if label is None:
-        thetime = time.time() - TICTOCLABELS['default']
-        print ("Timing default: %.2fs" % thetime)
+        thetime = TT() - TICTOCLABELS['default']
+        print ("Timing: %.2fs" % thetime)
     else:
-        thetime = time.time() - TICTOCLABELS[label]
-        print "Timing " + label + (": %.2fs" % thetime)
+        thetime = TT() - TICTOCLABELS[label]
+        print ''.join([' ']*level) + "---- " + label + (": %.2fs" % thetime)
 
 @All(globals())
 def filter_list_of_tuples_invalid(list_of_tuples):
@@ -119,6 +121,8 @@ def fig_save_fig(fig,fullpath,dpi=150):
 def pymath_default_imports(theglobals,thelocals):
     # TODO: don't need to return anything yet
     pymath_import_module(theglobals,thelocals,'copy','copy')
+    pymath_import_module(theglobals,thelocals,'copy','COPY',submodule='copy')
+    pymath_import_module(theglobals,thelocals,'copy','DEEPCOPY',submodule='deepcopy')
     pymath_import_module(theglobals,thelocals,'os','os')
     # TODO: from pprint import pprint
     pymath_import_module(theglobals,thelocals,'pprint','pprint')
@@ -130,7 +134,9 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'datetime','datetime')
     pymath_import_module(theglobals,thelocals,'pycurl','pycurl')
     pymath_import_module(theglobals,thelocals,'time','time')
+    pymath_import_module(theglobals,thelocals,'time','TT',submodule='time')
     pymath_import_module(theglobals,thelocals,'traceback','traceback')
+    pymath_import_module(theglobals,thelocals,'itertools','itertools')
     pymath_import_module(theglobals,thelocals,'urllib','urllib')
     pymath_import_module(theglobals,thelocals,'math','m')
     pymath_import_module(theglobals,thelocals,'Queue','Queue')
@@ -145,6 +151,7 @@ def pymath_default_imports(theglobals,thelocals):
     # TODO: psycopg2.extras
     pymath_import_module(theglobals,thelocals,'numpy','np')
     pymath_import_module(theglobals,thelocals,'scipy','sp')
+    pymath_import_module(theglobals,thelocals,'scipy','linalg',submodule='linalg')
     pymath_import_module(theglobals,thelocals,'matplotlib','mpl')
     # XXXX: this allows things to be done with no graphics
     # TODO: have a nicer configuration that accomodates headless servers, but still allows graphics to pop up
