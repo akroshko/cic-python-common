@@ -119,45 +119,50 @@ def fig_save_fig(fig,fullpath,dpi=150):
 
 @All(globals())
 def pymath_default_imports(theglobals,thelocals):
-    # TODO: don't need to return anything yet
+    """Import commonly used libraries into global namespace.  Especially
+    useful for quick little scripts.
+
+    After 'from pythode.pymath_common import *' use the line:
+    'pymath_default_imports(globals(),locals())'
+
+    """
+    # standard library
     pymath_import_module(theglobals,thelocals,'copy','copy')
     pymath_import_module(theglobals,thelocals,'copy','COPY',submodule='copy')
     pymath_import_module(theglobals,thelocals,'copy','DEEPCOPY',submodule='deepcopy')
-    pymath_import_module(theglobals,thelocals,'os','os')
-    # TODO: from pprint import pprint
+    pymath_import_module(theglobals,thelocals,'datetime','datetime')
+    pymath_import_module(theglobals,thelocals,'itertools','itertools')
+    # TODO: lxml.html
+    pymath_import_module(theglobals,thelocals,'lxml','lxml')
+    pymath_import_module(theglobals,thelocals,'json','json')
+    pymath_import_module(theglobals,thelocals,'math','m')
+    pymath_import_module(theglobals,thelocals,'multiprocessing','multiprocessing')
+    pymath_import_module(theglobals,thelocals,'multiprocessing','Pool',submodule='Pool')
     pymath_import_module(theglobals,thelocals,'pprint','pprint')
     pymath_import_module(theglobals,thelocals,'pprint','pp',submodule='pprint')
-    # TODO: import a nice re matcher
-    pymath_import_module(theglobals,thelocals,'random','random')
-    pymath_import_module(theglobals,thelocals,'re','re')
-    pymath_import_module(theglobals,thelocals,'socket','socket')
-    pymath_import_module(theglobals,thelocals,'datetime','datetime')
     pymath_import_module(theglobals,thelocals,'pycurl','pycurl')
+    pymath_import_module(theglobals,thelocals,'Queue','Queue')
+    pymath_import_module(theglobals,thelocals,'random','random')
+    # TODO: import a nice re matcher
+    pymath_import_module(theglobals,thelocals,'re','re')
+    pymath_import_module(theglobals,thelocals,'subprocess','subprocess')
+    pymath_import_module(theglobals,thelocals,'socket','socket')
     pymath_import_module(theglobals,thelocals,'time','time')
     pymath_import_module(theglobals,thelocals,'time','TT',submodule='time')
     pymath_import_module(theglobals,thelocals,'traceback','traceback')
-    pymath_import_module(theglobals,thelocals,'itertools','itertools')
     pymath_import_module(theglobals,thelocals,'urllib','urllib')
-    pymath_import_module(theglobals,thelocals,'math','m')
-    pymath_import_module(theglobals,thelocals,'Queue','Queue')
-    pymath_import_module(theglobals,thelocals,'lxml','lxml')
-    # TODO: lxml.html
-    pymath_import_module(theglobals,thelocals,'json','json')
-    pymath_import_module(theglobals,thelocals,'re','re')
-    pymath_import_module(theglobals,thelocals,'subprocess','subprocess')
-    pymath_import_module(theglobals,thelocals,'multiprocessing','multiprocessing')
-    pymath_import_module(theglobals,thelocals,'multiprocessing','Pool',submodule='Pool')
-    pymath_import_module(theglobals,thelocals,'psycopg2','psycopg2')
-    # TODO: psycopg2.extras
-    pymath_import_module(theglobals,thelocals,'numpy','np')
-    pymath_import_module(theglobals,thelocals,'scipy','sp')
-    pymath_import_module(theglobals,thelocals,'scipy','linalg',submodule='linalg')
+    ########################################
+    # not standard library
     pymath_import_module(theglobals,thelocals,'matplotlib','mpl')
     # XXXX: this allows things to be done with no graphics
     # TODO: have a nicer configuration that accomodates headless servers, but still allows graphics to pop up
     theglobals['mpl'].use('Agg')
     pymath_import_module(theglobals,thelocals,'matplotlib','plt',submodule='pyplot')
-
+    pymath_import_module(theglobals,thelocals,'numpy','np')
+    # TODO: psycopg2.extras
+    pymath_import_module(theglobals,thelocals,'psycopg2','psycopg2')
+    pymath_import_module(theglobals,thelocals,'scipy','sp')
+    pymath_import_module(theglobals,thelocals,'scipy','linalg',submodule='linalg')
     # from matplotlib.backends.backend_pdf import PdfPages
 
 # TODO: move pymath_default_imports_and_open_database in here
