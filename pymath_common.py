@@ -80,9 +80,11 @@ def toc(label=None,level=0):
 def filter_list_of_tuples_invalid(list_of_tuples):
     """Filter out in invalid values.  This generally for plotting, so
 things that are unplottable like None are filtered out.
-TODO: nan and inf?
-      raise special exception if non-scalar too?"""
-    return [t for t in list_of_tuples if t[0] is not None and t[1] is not None]
+    TODO: raise special exception if non-scalar too?"""
+    new_list_of_tuples = [t for t in list_of_tuples if t[0] is not None and t[1] is not None]
+    # TODO: use m, np, or sp functions here
+    new_list_of_tuples = [t for t in list_of_tuples if (not isinstance(t,float) or not (m.isnan(t) or m.isinf(t)))]
+    return new_list_of_tuples
 
 # TODO: possibily work with tuples
 @All(globals())
@@ -141,6 +143,7 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'pprint','pprint')
     pymath_import_module(theglobals,thelocals,'pprint','pp',submodule='pprint')
     pymath_import_module(theglobals,thelocals,'pycurl','pycurl')
+    pymath_import_module(theglobals,thelocals,'signal','signal')
     pymath_import_module(theglobals,thelocals,'Queue','Queue')
     pymath_import_module(theglobals,thelocals,'random','random')
     # TODO: import a nice re matcher
