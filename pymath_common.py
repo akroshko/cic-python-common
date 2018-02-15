@@ -26,6 +26,7 @@
 
 import os,sys
 import compileall
+import math as m
 from pprint import pprint as PP
 import re
 import subprocess
@@ -83,7 +84,7 @@ things that are unplottable like None are filtered out.
     TODO: raise special exception if non-scalar too?"""
     new_list_of_tuples = [t for t in list_of_tuples if t[0] is not None and t[1] is not None]
     # TODO: use m, np, or sp functions here
-    new_list_of_tuples = [t for t in list_of_tuples if (not isinstance(t,float) or not (m.isnan(t) or m.isinf(t)))]
+    new_list_of_tuples = [t for t in new_list_of_tuples if ((not isinstance(t[0],float) or not (m.isnan(t[0]) or m.isinf(t[0]))) and (not isinstance(t[1],float) or not (m.isnan(t[1]) or m.isinf(t[1]))))]
     return new_list_of_tuples
 
 # TODO: possibily work with tuples
@@ -111,12 +112,13 @@ def ax_make_nice_grid(ax):
 def fig_save_fig(fig,fullpath,dpi=150):
     path=os.path.dirname(fullpath)
     if not os.path.exists(path):
-        # Hack to make this function thread-safe
+        # hack to make this function thread-safe, because that's been an issue before...
         try:
             os.makedirs(path)
         except OSError:
             pass
-    fig.savefig(fullpath,dpi=dpi,bbox_inches='tight')
+    # disable transparency for efficiency
+    fig.savefig(fullpath,dpi=dpi,bbox_inches='tight',transparent=False)
     # TODO: close fig....
 
 @All(globals())
