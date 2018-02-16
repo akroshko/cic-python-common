@@ -38,6 +38,9 @@ import numpy as np
 
 TICTOCLABELS={}
 
+# if accessed without being set, this should raise an error
+LIST_OF_FLAGS=None
+
 __all__ = ['All']
 
 class All(object):
@@ -173,12 +176,31 @@ def pymath_default_imports(theglobals,thelocals):
 # TODO: move pymath_default_imports_and_open_database in here
 
 ################################################################################
+## deal with argv, functions that look like simple expression
+@All(globals())
+def argv_in(thearg):
+    """Make sure a flag is valid and check if in sys.argv."""
+    if thearg not in LIST_OF_FLAGS:
+        raise RuntimeError("Improper flag check!")
+    return thearg in sys.argv
+
+@All(globals())
+def argv_not_in(thearg):
+    """Make sure a flag is valid and check if not in sys.argv."""
+    if thearg not in LIST_OF_FLAGS:
+        raise RuntimeError("Improper flag check!")
+    return thearg not in sys.argv
+
+################################################################################
 ## some program utilities
+## TODO: rename this to have argv in it
 @All(globals())
 def check_valid_flags(argv,list_of_flags=[],mutually_exclusive_flags=[]):
     """This is a sanity check for simple flags.  Generally so long
 experiments do not fail because of minor mispellings.  For more
 sophisticated use argparse is recommended."""
+    global LIST_OF_FLAGS
+    LIST_OF_FLAGS=list_of_flags
     # TODO: maybe I want to just use sys.argv?
     # TODO: mutually exclusive flags should be tuples
     # TODO: should this actually call argparse?
@@ -214,7 +236,7 @@ def timestamp_now():
     ts = time.time()
     return datetime.datetime.fromtimestamp(ts).strftime('%Y%m%dT%H%M%S')
 
-check_orphaned_compiled_patterns=[('.pyc', '.py'),
+check_orphaned_compiled_patterns=[('.pyc',    '.py'),
                                   ('.sage.py','.sage'),
                                   ('.sage.pyc','.sage')]
 
