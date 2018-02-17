@@ -113,6 +113,13 @@ def ax_make_nice_grid(ax):
 
 @All(globals())
 def fig_save_fig(fig,fullpath,dpi=150):
+    os_makedirs(fullpath)
+    # disable transparency for efficiency
+    fig.savefig(fullpath,dpi=dpi,bbox_inches='tight',transparent=False)
+    # TODO: close fig....
+
+@All(globals())
+def os_makedirs(fullpath):
     path=os.path.dirname(fullpath)
     if not os.path.exists(path):
         # hack to make this function thread-safe, because that's been an issue before...
@@ -120,9 +127,6 @@ def fig_save_fig(fig,fullpath,dpi=150):
             os.makedirs(path)
         except OSError:
             pass
-    # disable transparency for efficiency
-    fig.savefig(fullpath,dpi=dpi,bbox_inches='tight',transparent=False)
-    # TODO: close fig....
 
 @All(globals())
 def pymath_default_imports(theglobals,thelocals):
