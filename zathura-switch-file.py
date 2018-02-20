@@ -3,7 +3,7 @@
 # Copyright (C) 2017, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
-# Maintainer: Andrew Kroshko <akroshko@gmail.com>
+# Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Jan 19 2017
 # Version: 20171224
 # URL: https://github.com/akroshko/python-stdlib-personal
