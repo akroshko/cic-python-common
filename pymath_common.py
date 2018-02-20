@@ -209,7 +209,7 @@ sophisticated use argparse is recommended."""
     # TODO: mutually exclusive flags should be tuples
     # TODO: should this actually call argparse?
     for a in argv[1:]:
-        if a not in list_of_flags:
+        if a.startswith('--') and a not in list_of_flags:
             raise RuntimeError("Improper arguments or flags given!!! Specifically: ",a)
 
 @All(globals())
