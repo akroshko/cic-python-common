@@ -194,6 +194,7 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'numpy','np')
     pymath_import_module(theglobals,thelocals,'scipy','sp')
     pymath_import_module(theglobals,thelocals,'scipy','linalg',submodule='linalg')
+    pymath_import_module(theglobals,thelocals,'scipy','sparse',submodule='sparse')
     pymath_import_module(theglobals,thelocals,'scipy','SP_ABSOLUTE',   submodule='absolute')
     pymath_import_module(theglobals,thelocals,'scipy','SP_ARRAY',      submodule='array')
     pymath_import_module(theglobals,thelocals,'scipy','SP_CONCATENATE',submodule='concatenate')
