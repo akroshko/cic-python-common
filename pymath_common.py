@@ -8,7 +8,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Wed Nov 15, 2017
-# Version: 20180208
+# Version: 20180228
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -35,13 +35,16 @@ from time import time as TT
 import traceback
 
 import numpy as np
+import scipy as sp
 
 TICTOCLABELS={}
 
 # if accessed without being set, this should raise an error
 LIST_OF_FLAGS=None
 
-__all__ = ['All']
+SP_DOUBLE_EPS=sp.finfo(sp.double).eps
+
+__all__ = ['All','SP_DOUBLE_EPS']
 
 class All(object):
     """ Provide a decorator that add a class or method to the __all__ variable. """
@@ -146,11 +149,11 @@ def pymath_default_imports(theglobals,thelocals):
     # TODO: lxml.html
     pymath_import_module(theglobals,thelocals,'lxml','lxml')
     pymath_import_module(theglobals,thelocals,'json','json')
-    pymath_import_module(theglobals,thelocals,'math','m')
     pymath_import_module(theglobals,thelocals,'multiprocessing','multiprocessing')
     pymath_import_module(theglobals,thelocals,'multiprocessing','Pool',submodule='Pool')
     pymath_import_module(theglobals,thelocals,'pprint','pprint')
     pymath_import_module(theglobals,thelocals,'pprint','pp',submodule='pprint')
+    pymath_import_module(theglobals,thelocals,'pprint','PP',submodule='pprint')
     pymath_import_module(theglobals,thelocals,'pycurl','pycurl')
     pymath_import_module(theglobals,thelocals,'signal','signal')
     pymath_import_module(theglobals,thelocals,'Queue','Queue')
@@ -161,21 +164,52 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'socket','socket')
     pymath_import_module(theglobals,thelocals,'time','time')
     pymath_import_module(theglobals,thelocals,'time','TT',submodule='time')
+    pymath_import_module(theglobals,thelocals,'time','TIME_TIME',submodule='time')
     pymath_import_module(theglobals,thelocals,'traceback','traceback')
     pymath_import_module(theglobals,thelocals,'urllib','urllib')
+    ########################################
+    # math
+    pymath_import_module(theglobals,thelocals,'math','m')
+    pymath_import_module(theglobals,thelocals,'math','M_COS', submodule='cos')
+    pymath_import_module(theglobals,thelocals,'math','M_PI',  submodule='pi')
+    pymath_import_module(theglobals,thelocals,'math','M_SIN', submodule='sin')
+    pymath_import_module(theglobals,thelocals,'math','M_SQRT',submodule='sqrt')
     ########################################
     # not standard library
     pymath_import_module(theglobals,thelocals,'matplotlib','mpl')
     # XXXX: this allows things to be done with no graphics
     # TODO: have a nicer configuration that accomodates headless servers, but still allows graphics to pop up
-    theglobals['mpl'].use('Agg')
+    if os.name == 'posix' and "DISPLAY" not in os.environ:
+        theglobals['mpl'].use('Agg')
+    else:
+        theglobals['mpl'].use('TkAgg')
     pymath_import_module(theglobals,thelocals,'matplotlib','plt',submodule='pyplot')
-    pymath_import_module(theglobals,thelocals,'numpy','np')
+
     # TODO: psycopg2.extras
     pymath_import_module(theglobals,thelocals,'psycopg2','psycopg2')
+
+    # from matplotlib.backends.backend_pdf import PdfPages
+    # these are things that I commonly use in inner loops (do not want to do the dot operator), or for convienience
+    # scipy
+    pymath_import_module(theglobals,thelocals,'numpy','np')
     pymath_import_module(theglobals,thelocals,'scipy','sp')
     pymath_import_module(theglobals,thelocals,'scipy','linalg',submodule='linalg')
-    # from matplotlib.backends.backend_pdf import PdfPages
+    pymath_import_module(theglobals,thelocals,'scipy','SP_ABSOLUTE',   submodule='absolute')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_ARRAY',      submodule='array')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_CONCATENATE',submodule='concatenate')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_DOT',        submodule='dot')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_EMPTY',      submodule='empty')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_INF',        submodule='inf')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_INF',        submodule='isinf')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_ISFINITE',   submodule='isfinite')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_MAXIMUM',    submodule='maximum')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_MEAN',       submodule='mean')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_NEWAXIS',    submodule='newaxis')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_REPEAT',     submodule='repeat')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_SUM',        submodule='sum')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_SWAPAXES',   submodule='swapaxes')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_ZEROS',      submodule='zeros')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_ZEROS_LIKE', submodule='zeros_like')
 
 # TODO: move pymath_default_imports_and_open_database in here
 
