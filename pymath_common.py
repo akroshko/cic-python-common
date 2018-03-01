@@ -42,9 +42,10 @@ TICTOCLABELS={}
 # if accessed without being set, this should raise an error
 LIST_OF_FLAGS=None
 
+NP_DOUBLE_EPS=np.finfo(sp.double).eps
 SP_DOUBLE_EPS=sp.finfo(sp.double).eps
 
-__all__ = ['All','SP_DOUBLE_EPS']
+__all__ = ['All','SP_DOUBLE_EPS','NP_DOUBLE_EPS']
 
 class All(object):
     """ Provide a decorator that add a class or method to the __all__ variable. """
@@ -192,6 +193,23 @@ def pymath_default_imports(theglobals,thelocals):
     # these are things that I commonly use in inner loops (do not want to do the dot operator), or for convienience
     # scipy
     pymath_import_module(theglobals,thelocals,'numpy','np')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_ABSOLUTE',   submodule='absolute')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_ARRAY',      submodule='array')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_CONCATENATE',submodule='concatenate')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_DOT',        submodule='dot')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_EMPTY',      submodule='empty')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_INF',        submodule='inf')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_ISINF',      submodule='isinf')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_ISFINITE',   submodule='isfinite')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_MAXIMUM',    submodule='maximum')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_MULTIPLY',   submodule='multiply')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_MEAN',       submodule='mean')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_NEWAXIS',    submodule='newaxis')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_REPEAT',     submodule='repeat')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_SUM',        submodule='sum')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_SWAPAXES',   submodule='swapaxes')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_ZEROS',      submodule='zeros')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_ZEROS_LIKE', submodule='zeros_like')
     pymath_import_module(theglobals,thelocals,'scipy','sp')
     pymath_import_module(theglobals,thelocals,'scipy','linalg',submodule='linalg')
     pymath_import_module(theglobals,thelocals,'scipy','sparse',submodule='sparse')
@@ -201,10 +219,11 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'scipy','SP_DOT',        submodule='dot')
     pymath_import_module(theglobals,thelocals,'scipy','SP_EMPTY',      submodule='empty')
     pymath_import_module(theglobals,thelocals,'scipy','SP_INF',        submodule='inf')
-    pymath_import_module(theglobals,thelocals,'scipy','SP_INF',        submodule='isinf')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_ISINF',      submodule='isinf')
     pymath_import_module(theglobals,thelocals,'scipy','SP_ISFINITE',   submodule='isfinite')
     pymath_import_module(theglobals,thelocals,'scipy','SP_MAXIMUM',    submodule='maximum')
     pymath_import_module(theglobals,thelocals,'scipy','SP_MEAN',       submodule='mean')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_MULTIPLY',   submodule='multiply')
     pymath_import_module(theglobals,thelocals,'scipy','SP_NEWAXIS',    submodule='newaxis')
     pymath_import_module(theglobals,thelocals,'scipy','SP_REPEAT',     submodule='repeat')
     pymath_import_module(theglobals,thelocals,'scipy','SP_SUM',        submodule='sum')
