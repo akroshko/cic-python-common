@@ -244,6 +244,7 @@ def pymath_default_imports(theglobals,thelocals):
 @All(globals())
 def argv_in(thearg):
     """Make sure a flag is valid and check if in sys.argv."""
+    global LIST_OF_FLAGS
     if thearg not in LIST_OF_FLAGS:
         raise RuntimeError("Improper flag check!")
     return thearg in sys.argv
@@ -251,6 +252,7 @@ def argv_in(thearg):
 @All(globals())
 def argv_not_in(thearg):
     """Make sure a flag is valid and check if not in sys.argv."""
+    global LIST_OF_FLAGS
     if thearg not in LIST_OF_FLAGS:
         raise RuntimeError("Improper flag check!")
     return thearg not in sys.argv
