@@ -152,7 +152,7 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'json','json')
     pymath_import_module(theglobals,thelocals,'multiprocessing','multiprocessing')
     pymath_import_module(theglobals,thelocals,'multiprocessing','Pool',submodule='Pool')
-    pymath_import_module(theglobals,thelocals,'pprint','pprint')
+    pymath_import_module(theglobals,thelocals,'pprint','pprint',submodule='pprint')
     pymath_import_module(theglobals,thelocals,'pprint','pp',submodule='pprint')
     pymath_import_module(theglobals,thelocals,'pprint','PP',submodule='pprint')
     pymath_import_module(theglobals,thelocals,'pycurl','pycurl')
