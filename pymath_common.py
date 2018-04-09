@@ -123,6 +123,11 @@ def fig_save_fig(fig,fullpath,dpi=150):
     # TODO: close fig....
 
 @All(globals())
+def mpl_print_rc():
+    from matplotlib import rcParams
+    PP(rcParams)
+
+@All(globals())
 def os_makedirs(fullpath):
     path=os.path.dirname(fullpath)
     if not os.path.exists(path):
