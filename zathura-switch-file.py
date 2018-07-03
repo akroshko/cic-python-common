@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """ This file is used by zathura to go through files in a directory by alphabetic order or modification time. """
-# Copyright (C) 2017, Andrew Kroshko, all rights reserved.
+# Copyright (C) 2017-2018, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Jan 19 2017
-# Version: 20171224
+# Version: 20180703
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ zathura_extension_patterns=['.*\.djvu$','.*\.pdf$']
 
 # TODO: get rid of the test stuff
 def main(argv):
-    fh = open('/home/akroshko/zathuratest.txt','w')
+    fh = open(os.path.expanduser('~/zathuratest.txt'),'w')
     # enumerate zathura instances
     bus = dbus.SessionBus()
     zathura_names = [n for n in bus.list_names() if 'zathura' in n]
