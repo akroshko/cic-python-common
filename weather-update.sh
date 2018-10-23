@@ -19,7 +19,7 @@ main () {
     local UNITS=m
 
     # where this script and the XSLT lives
-    local RUNDIR=${HOME}/bin
+    local RUNDIR="$HOME/bin"
 
     # there's probably other stuff besides CURL that will work for this, but i haven't
     # tried any others.

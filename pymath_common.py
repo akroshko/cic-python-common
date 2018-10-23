@@ -8,7 +8,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Wed Nov 15, 2017
-# Version: 20180714
+# Version: 20181022
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ import compileall
 import math as m
 from pprint import pprint as PP
 import re
+import socket
 import subprocess
 import time
 from time import time as TT
@@ -117,9 +118,10 @@ def ax_make_nice_grid(ax):
 
 @All(globals())
 def fig_save_fig(fig,fullpath,dpi=150):
-    os_makedirs(fullpath)
+    os_makedirs(os.path.dirname(fullpath))
     # disable transparency for efficiency
     fig.savefig(fullpath,dpi=dpi,bbox_inches='tight',transparent=False)
+    print "Saved figure to: " + fullpath
     # TODO: close fig....
 
 @All(globals())
@@ -128,21 +130,20 @@ def mpl_print_rc():
     PP(rcParams)
 
 @All(globals())
-def os_makedirs(fullpath):
-    path=os.path.dirname(fullpath)
+def os_makedirs(path):
     if not os.path.exists(path):
-        # hack to make this function thread-safe, because that's been an issue before...
+        # hack to make this function thread-safe, because the path might already exist, because that's been an issue before...
         try:
             os.makedirs(path)
-        except OSError:
-            pass
+        except OSError,e:
+            print e
 
 @All(globals())
 def pymath_default_imports(theglobals,thelocals):
     """Import commonly used libraries into global namespace.  Especially
     useful for quick little scripts.
 
-    After 'from pythode.pymath_common import *' use the line:
+    After 'from pythode.pymathdb.pymath_common import *' use the line:
     'pymath_default_imports(globals(),locals())'
 
     """
@@ -185,10 +186,12 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'matplotlib','mpl')
     # XXXX: this allows things to be done with no graphics
     # TODO: have a nicer configuration that accomodates headless servers, but still allows graphics to pop up
-    if os.name == 'posix' and "DISPLAY" not in os.environ:
-        theglobals['mpl'].use('Agg')
-    else:
-        theglobals['mpl'].use('TkAgg')
+    theglobals['mpl'].use('Agg')
+    # TODO: change back for Sage 8.3
+    # if os.name == 'posix' and not os.getenv("DISPLAY"):
+    #     theglobals['mpl'].use('Agg')
+    # else:
+    #     theglobals['mpl'].use('TkAgg')
     pymath_import_module(theglobals,thelocals,'matplotlib','plt',submodule='pyplot')
 
     # TODO: psycopg2.extras
@@ -204,18 +207,23 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'numpy','NP_DIVIDE',     submodule='divide')
     pymath_import_module(theglobals,thelocals,'numpy','NP_DOT',        submodule='dot')
     pymath_import_module(theglobals,thelocals,'numpy','NP_EMPTY',      submodule='empty')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_FLOAT64',    submodule='float64')
     pymath_import_module(theglobals,thelocals,'numpy','NP_INF',        submodule='inf')
     pymath_import_module(theglobals,thelocals,'numpy','NP_ISINF',      submodule='isinf')
     pymath_import_module(theglobals,thelocals,'numpy','NP_ISFINITE',   submodule='isfinite')
     pymath_import_module(theglobals,thelocals,'numpy','NP_MAXIMUM',    submodule='maximum')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_MESHGRID',   submodule='meshgrid')
     pymath_import_module(theglobals,thelocals,'numpy','NP_MULTIPLY',   submodule='multiply')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_MA',         submodule='ma')
     pymath_import_module(theglobals,thelocals,'numpy','NP_MEAN',       submodule='mean')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_NAN',        submodule='nan')
     pymath_import_module(theglobals,thelocals,'numpy','NP_NEWAXIS',    submodule='newaxis')
     pymath_import_module(theglobals,thelocals,'numpy','NP_ONES',       submodule='ones')
     pymath_import_module(theglobals,thelocals,'numpy','NP_REPEAT',     submodule='repeat')
     pymath_import_module(theglobals,thelocals,'numpy','NP_SQUARE',     submodule='square')
     pymath_import_module(theglobals,thelocals,'numpy','NP_SUM',        submodule='sum')
     pymath_import_module(theglobals,thelocals,'numpy','NP_SWAPAXES',   submodule='swapaxes')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_WARNINGS',   submodule='warnings')
     pymath_import_module(theglobals,thelocals,'numpy','NP_ZEROS',      submodule='zeros')
     pymath_import_module(theglobals,thelocals,'numpy','NP_ZEROS_LIKE', submodule='zeros_like')
     pymath_import_module(theglobals,thelocals,'scipy','sp')
@@ -230,6 +238,9 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'scipy','SP_INF',        submodule='inf')
     pymath_import_module(theglobals,thelocals,'scipy','SP_ISINF',      submodule='isinf')
     pymath_import_module(theglobals,thelocals,'scipy','SP_ISFINITE',   submodule='isfinite')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_LINSPACE',   submodule='linspace')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_MA',         submodule='ma')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_NAN',        submodule='nan')
     pymath_import_module(theglobals,thelocals,'scipy','SP_MAXIMUM',    submodule='maximum')
     pymath_import_module(theglobals,thelocals,'scipy','SP_MEAN',       submodule='mean')
     pymath_import_module(theglobals,thelocals,'scipy','SP_MULTIPLY',   submodule='multiply')
@@ -239,10 +250,9 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'scipy','SP_SQUARE',     submodule='square')
     pymath_import_module(theglobals,thelocals,'scipy','SP_SUM',        submodule='sum')
     pymath_import_module(theglobals,thelocals,'scipy','SP_SWAPAXES',   submodule='swapaxes')
+    pymath_import_module(theglobals,thelocals,'scipy','SP_TILE',       submodule='tile')
     pymath_import_module(theglobals,thelocals,'scipy','SP_ZEROS',      submodule='zeros')
     pymath_import_module(theglobals,thelocals,'scipy','SP_ZEROS_LIKE', submodule='zeros_like')
-
-# TODO: move pymath_default_imports_and_open_database in here
 
 ################################################################################
 ## deal with argv, functions that look like simple expression
@@ -332,9 +342,9 @@ def check_python_sage_project_sanity(project_path):
                         return 1
     # check all python scripts
     # TODO: make sure regex works, still listing these directories...
-    rc = compileall.compile_dir(project_path,rx=re.compile('.*/(\.git|\.svn|\.ropeproject).*'))
+    rc = compileall.compile_dir(project_path,rx=re.compile('.*/(\.git|\.svn|\.hg|\.ropeproject)/.*'))
     if rc != 1:
-        print "Python compile return code: ",rc
+        print "Python compile return code: ", rc
         return 1
     # looping twice because orphaned is faster and should be fixed first
     # this is special for sage, might want to double compile python because that is fast
@@ -395,3 +405,57 @@ def compact_integer_array_print(arr):
                 thestring += thechar
         thestring += '\n'
     return thestring
+
+@All(globals())
+def open_database(connection,cursor):
+    import psycopg2
+    # TODO: do not open database if connection and cursor still work
+    # always localhost, but as a variable just in case
+    dbhostname='localhost'
+    # TODO: can socket.gethostname()
+    if (os.getenv('PYMATHDBMAIN') and socket.gethostname() == os.getenv('PYMATHDBMAIN')) or not os.getenv('PYMATHDBMAIN'):
+        # PostgreSQL database is local
+        port='5432'
+    else:
+        # TODO: make configurable
+        port='5433'
+    if connection == None:
+        try:
+            # TODO: password in args?
+            conn_string = "dbname='pymathdb' user=" + os.getenv('PYMATHDBUSER') + " port='" + port + "' host='" + dbhostname + "' password='" + os.getenv('PYMATHDBPASSWORD') + "'"
+            # print the connection string we will use to connect
+            print "Connecting to database:\n  --> %s" % (conn_string)
+            # get a connection, if a connect cannot be made an exception will be raised here
+            connection = psycopg2.connect(conn_string)
+            # should also be disabled in database config
+            # TODO: put back on once I understand!!!
+            # TODO: change for interactive use?
+            connection.autocommit=False
+            # conn.cursor will return a cursor object, you can use this cursor to perform queries
+            cursor = connection.cursor()
+        except Exception, e:
+            print "Unable to connect to the database"
+            print e
+            # TODO: do I really want to bail on failed connection?
+            sys.exit(1)
+    return connection,cursor
+
+@All(globals())
+def pymath_db_setup(theglobals,thelocals):
+    # TODO: open database and add things to globals
+    # TODO: how does this go?
+    dbhostname = "localhost"
+    connection = None
+    cursor = None
+    # TODO: need a better function for this that does not comprimise privacy
+    connection,cursor=open_database(connection,cursor)
+    theglobals['CONNECTION'] = connection
+    theglobals['CURSOR'] = cursor
+    # TODO: an all decorator and other utilities
+    # TODO: need some nice functions for stuff....
+
+@All(globals())
+def pymath_default_imports_and_db_setup(theglobals,thelocals):
+    from pythode.pymathdb.pymath_common import pymath_default_imports
+    pymath_default_imports(theglobals,thelocals)
+    pymath_db_setup(theglobals,thelocals)
