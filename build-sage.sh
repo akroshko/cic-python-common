@@ -8,7 +8,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Aug 09, 2018
-# Version: 20181022
+# Version: 20181105
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -89,8 +89,8 @@ fetch-build-sage () {
     elif [[ -z "$SAGEMIRROR" ]]; then
         local SAGEMIRROR="http://www.cecm.sfu.ca/sage/src/"
     elif [[ -z "$SAGELOCATION" ]]; then
-        # TODO: put this somewhere else
-        local SAGELOCATION="${PYMATHDBTMP}/"
+        # TODO: put this somewhere else and check for errors
+        local SAGELOCATION="$PYMATHDBTMP/"
     fi
     if [[ -d /opt/sage-"$SAGEVERSION" && $@ != *"--finalize"* ]]; then
         if /opt/sage-"$SAGEVERSION"/sage --version; then
@@ -110,13 +110,13 @@ fetch-build-sage () {
             sudo apt-get install ocl-icd-opencl-dev --no-install-recommends
         fi
         pushd . >/dev/null
-        if [[ -e "${SAGELOCATION}"/sage-"$SAGEVERSION".tar.gz ]]; then
-            cd "${SAGELOCATION}"
+        if [[ -e "${SAGELOCATION}/sage-${SAGEVERSION}.tar.gz" ]]; then
+            cd "$SAGELOCATION"
             msg "Sage tabball already found in standard location!"
         else
             # TODO: put into ~/tmp for more universal use
             # TODO: proper error message if md5sum is not good
-            if [[ ! -e "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" || ! $(md5sum "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" | cut -d' ' -f1) == "${SAGEVERSIONMD5}" ]]; then
+            if [[ ! -e "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" || ! $(md5sum "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" | cut -d' ' -f1) == "$SAGEVERSIONMD5" ]]; then
                 msg "Downloading Sagemath tarball!"
                 [[ -e "$HOME/tmp/sage-download" ]] && "$HOME/tmp/sage-download"
                 mkdir -p "$HOME/tmp/sage-download"
@@ -124,7 +124,7 @@ fetch-build-sage () {
                 # should I delete this?
                 # TODO: does the tarball already exist?
                 #       do not delete directory in this case
-                wget -O "sage-${SAGEVERSION}.tar.gz" "$SAGEMIRROR/sage-${SAGEVERSION}.tar.gz"
+                wget -O "sage-$SAGEVERSION.tar.gz" "$SAGEMIRROR/sage-$SAGEVERSION.tar.gz"
                 msg "Finished downloading!"
             else
                 msg "Sagemath tarball already downloaded!"
@@ -140,18 +140,18 @@ fetch-build-sage () {
         fi
         msg "md5 sum correct!"
         msg "Unpacking!"
-        if [[ -d sage-"${SAGEVERSION}" ]]; then
-            rm -rf sage-"${SAGEVERSION}"
+        if [[ -d "sage-$SAGEVERSION" ]]; then
+            rm -rf "sage-$SAGEVERSION"
         fi
-        tar xvzf sage-"${SAGEVERSION}".tar.gz
+        tar xvzf "sage-${SAGEVERSION}.tar.gz"
         # check installation
         msg "Sage unpacked.  Answer 'y' to move installation directory to /opt and continue with build or 'n' to quit."
         ask_yn
         local YN=$?
         if [[ "$YN" == 0 ]]; then
             sudo mkdir -p /opt
-            sudo mv ./sage-"${SAGEVERSION}" /opt
-            cd /opt/sage-"${SAGEVERSION}"
+            sudo mv "./sage-${SAGEVERSION}" /opt
+            cd "/opt/sage-${SAGEVERSION}"
         else
             popd >/dev/null
             return 1
@@ -172,7 +172,7 @@ fetch-build-sage () {
     else
         local YN2=0
         pushd . >/dev/null
-        cd /opt/sage-"${SAGEVERSION}"
+        cd "/opt/sage-${SAGEVERSION}"
     fi
     # TODO: make sure I can rerun this if necesssary
     # TODO: make an upgrade, find out if this does not work, make sure it does
@@ -190,7 +190,11 @@ fetch-build-sage () {
         if [[ -e /usr/local/bin/sage ]]; then
             sudo rm /usr/local/bin/sage
         fi
-        sudo ln -s /opt/sage-"${SAGEVERSION}"/sage /usr/local/bin
+        if [[ -e "/opt/sage-${SAGEVERSION}/sage" ]]; then
+            sudo ln -s "/opt/sage-${SAGEVERSION}/sage" /usr/local/bin
+        else
+            yell "Cannot find /opt/sage-${SAGEVERSION}/sage so not symlinkiing to /usr/local/bin/sage"
+        fi
     else
         echo "Not finalizing!  Can be done later with --finalize"
         popd >/dev/null

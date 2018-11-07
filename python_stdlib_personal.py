@@ -85,16 +85,36 @@ def generate_uid():
     """
     return int48_base64(random.randint(0,2**64-1))
 
+# TODO: this is duplicated elsewhere
+def convert_to_char(number):
+    if number <= 25:
+        # return chr(number+ord('a'))
+        return chr((number)+ord('A'))
+    elif number <= 35:
+        return str(number-26)
+    # elif number <= 51:
+    #     return chr((number-26)+ord('A'))
+    # elif number <= 61:
+    #     return str(number-52)
+    else:
+        raise RuntimeError()
+
+# TODO: this is duplicated elsewhere
 def generate_uid11():
-    """
-    Create a unique ID from a dictionary of atoms.  Should be reproducible given
+    """Create a unique ID from a dictionary of atoms.  Should be reproducible given
     the same values.
 
     **Returns**
       string:
-           An 8 character url-safe unique ID, reflecting 2**48 possibilities.
-           With 1e6 of these uids, there is a probability of 0.0017747 of a
-           collision.
+
+           An 11 character url-safe unique ID.  Only upper case and
+           numbers are used to make these unique IDs easy to grep.
+           There are approximately 2**57 possibilities with about 454
+           million values expected before a collision.
+
+    This is not suitable for secure or cryptographic or production
+    use, only for limted personal use where collisions are easily
+    fixed.
 
     """
     # TODO: Create by hashing the hash values of the elements.  Do we really want
@@ -102,18 +122,30 @@ def generate_uid11():
     # TODO: Only uses random numbers right now, maybe this is best?
     # XXXX: this isn't a real UID function at all!!!  Can I improve this?
     # run the generator a bit for fun
-    for i in xrange(random.randint(64,128)):
-        n1 = random.randint(0,2**64-1)
-        n2 = random.randint(0,2**64-1)
-    n1 = random.randint(0,2**64-1)
-    n2 = random.randint(0,2**64-1)
-    data1 = struct.pack('<Q',n1 & 0xFFFFFFFFFFFFL).rstrip('\x00')
-    data2 = struct.pack('<Q',n2 & 0xFFFFFFFFFFFFL).rstrip('\x00')
-    if len(data1) == 0:
-        data1 = '\x00'
-    if len(data2) == 0:
-        data2 = '\x00'
-    return (base64.urlsafe_b64encode(data1).rstrip('=')+base64.urlsafe_b64encode(data2).rstrip('='))[0:11]
+    # for i in xrange(random.randint(64,128)):
+    #     n1 = random.randint(0,2**64-1)
+    #     n2 = random.randint(0,2**64-1)
+    # n1 = random.randint(0,2**64-1)
+    # n2 = random.randint(0,2**64-1)
+    # data1 = struct.pack('<Q',n1 & 0xFFFFFFFFFFFFL).rstrip('\x00')
+    # data2 = struct.pack('<Q',n2 & 0xFFFFFFFFFFFFL).rstrip('\x00')
+    # if len(data1) == 0:
+    #     data1 = '\x00'
+    # if len(data2) == 0:
+    #     data2 = '\x00'
+    # return # (base64.urlsafe_b64encode(data1).rstrip('=')+base64.urlsafe_b64encode(data2).rstrip('='))[0:11]
+    return (convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)) +
+            convert_to_char(random.randint(0,35)))
+
 
 def int48_base64(n):
     """
