@@ -8,7 +8,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Aug 09, 2018
-# Version: 20181105
+# Version: 20181126
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -118,7 +118,6 @@ fetch-build-sage () {
             # TODO: proper error message if md5sum is not good
             if [[ ! -e "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" || ! $(md5sum "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" | cut -d' ' -f1) == "$SAGEVERSIONMD5" ]]; then
                 msg "Downloading Sagemath tarball!"
-                [[ -e "$HOME/tmp/sage-download" ]] && "$HOME/tmp/sage-download"
                 mkdir -p "$HOME/tmp/sage-download"
                 cd "$HOME/tmp/sage-download"
                 # should I delete this?
