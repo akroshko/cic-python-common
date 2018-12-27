@@ -48,6 +48,8 @@ SLASH_TRANSLATE = string.maketrans('/','\\')
 DASH_TRANSLATE = string.maketrans('-','_')
 PATH_DELIMETER = os.pathsep
 
+HOMEDIRECTORY=os.path.expanduser('~')
+
 from python_stdlib_constants import BWhite,White,BRed,Red,BYellow,Yellow,BGreen,Green,On_Blue,On_Purple,On_Cyan,Color_Off
 
 def int64_base64(n):
@@ -621,7 +623,7 @@ def get_home():
       string:
         The current home directory.
     """
-    current_home = os.path.expanduser('~')
+    current_home = HOMEDIRECTORY
     return current_home
 
 ##################
@@ -965,7 +967,7 @@ def call_bash_env(command,hosts=None,**kwds):
     # TODO shlex?
     # TODO other shells?
     #      merge lists?
-    return subprocess.call(['bash','--init-file',os.path.expanduser('~/.bash_env'),'-c'] + [' '.join(command)],**kwds)
+    return subprocess.call(['bash','--init-file',os.path.join(HOMEDIRECTORY,'.bash_env'),'-c'] + [' '.join(command)],**kwds)
 
 @CheckHosts('hosts')
 @MakeList(0)

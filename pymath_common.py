@@ -222,6 +222,7 @@ def pymath_default_imports(theglobals,thelocals):
     pymath_import_module(theglobals,thelocals,'numpy','NP_REPEAT',     submodule='repeat')
     pymath_import_module(theglobals,thelocals,'numpy','NP_SQUARE',     submodule='square')
     pymath_import_module(theglobals,thelocals,'numpy','NP_SUM',        submodule='sum')
+    pymath_import_module(theglobals,thelocals,'numpy','NP_TILE',       submodule='tile')
     pymath_import_module(theglobals,thelocals,'numpy','NP_SWAPAXES',   submodule='swapaxes')
     pymath_import_module(theglobals,thelocals,'numpy','NP_WARNINGS',   submodule='warnings')
     pymath_import_module(theglobals,thelocals,'numpy','NP_ZEROS',      submodule='zeros')

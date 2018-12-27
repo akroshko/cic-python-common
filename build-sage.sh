@@ -69,6 +69,14 @@ fetch-build-sage-nice () {
     /usr/bin/nice --adjustment 20 /usr/bin/ionice -c3 fetch-build-sage
 }
 
+export DEFAULT_SAGEVERSION="8.4"
+export DEFAULT_SAGEVERSIONMD5="8f883a26f6ff2482b415151b82e22548"
+# export DEFAULT_SAGEVERSION="8.3"
+# export DEFAULT_SAGEVERSIONMD5="32b5eddff38f8215093b9c645763c904"
+# TODO: using older version of Sage for compatibility
+# export DEFAULT_SAGEVERSION="8.0"
+# export DEFAULT_SAGEVERSIONMD5="93bdd128991e9144c4b137d3d6655065"
+
 # TODO: reverse these...
 fetch-build-sage () {
     # fetch and compile current version of sage
@@ -76,13 +84,10 @@ fetch-build-sage () {
     # XXXX: need to set sage variables elsewhere
     # TODO: check for valid installation
     if [[ -z "$SAGEVERSION" || -z "$SAGEVERSIONMD5" ]]; then
-        msg "Using default sage version and md5 checksum"
+        msg "Using default of Sage version $DEFAULT_SAGEVERSION with an md5 checksum of $DEFAULT_SAGEVERSIONMD5"
         # update for every new version sage
-        local SAGEVERSION="8.3"
-        local SAGEVERSIONMD5="32b5eddff38f8215093b9c645763c904"
-        # TODO: using older version of Sage for compatibility
-        # local SAGEVERSION="8.0"
-        # local SAGEVERSIONMD5="93bdd128991e9144c4b137d3d6655065"
+        local SAGEVERSION="$DEFAULT_SAGEVERSION"
+        local SAGEVERSIONMD5="$DEFAULT_SAGEVERSIONMD5"
     fi
     if [[ -n "$SAGEMIRROR" && -n "$SAGELOCATION" ]];then
        yell "Cannot specify both SAGEMIRROR and SAGELOCATION at the same time!!!"
@@ -112,7 +117,7 @@ fetch-build-sage () {
         pushd . >/dev/null
         if [[ -e "${SAGELOCATION}/sage-${SAGEVERSION}.tar.gz" ]]; then
             cd "$SAGELOCATION"
-            msg "Sage tabball already found in standard location!"
+            msg "Sage tarball already found in standard location!"
         else
             # TODO: put into ~/tmp for more universal use
             # TODO: proper error message if md5sum is not good
@@ -231,8 +236,12 @@ fetch-build-sage-packages () {
 }
 
 main () {
-    if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    # TODO: this might be an issue with just -h in this way at some point
+    if [[ $@ != *"--install"* || $@ == *"--help"* || $@ == *"-h"* ]]; then
         echo "Usage: "
+        echo ""
+        echo "--install"
+        echo "  Do the installation for real."
         echo ""
         echo "--no-x11"
         echo "  Do not install with X11 dependencies"
@@ -245,19 +254,23 @@ main () {
         echo "  Use one process for building Sage"
         echo "  Useful for laptops and other computers with limited computational power, memory, or thermal managment"
         echo ""
-        echo "-j4"
+        echo "-j2"
+        echo "  Use two processes for building Sage"
+        echo "  Useful for dual-core desktops and quad-core computers with limited computational power, memory, or thermal managment"
+        echo ""
+        echo "-j4 (default)"
         echo "  Use four processes for building Sage"
-        echo "  Useful for those machines where -j8 is slow or leads to lockups"
+        echo "  Useful for quad-core computers where -j8 is slow or leads to lockups"
         echo ""
         echo "-j8"
         echo "  Use eight processes for building Sage"
-        echo "  A good default for four core/eight thread computers"
+        echo "  Useful for four core/eight thread computers where it can provide an advantage"
         echo ""
         echo "Environment variables:"
         echo ""
-        echo "SAGEVERSION:    The Sage version to install, e.g., 8.3"
+        echo "SAGEVERSION:    The Sage version to install, (default $DEFAULT_SAGEVERSION)"
         echo "                Must specific SAGEVERSIONMD5 with SAGEVERSION"
-        echo "SAGEVERSIONMD5: The md5 checksum of the Sage version to install"
+        echo "SAGEVERSIONMD5: The md5 checksum of the Sage version to install, (default $DEFAULT_SAGEVERSIONMD5)"
         echo "                Must specific SAGEVERSION with SAGEVERSIONMD5"
         echo "SAGEMIRROR:     The url of the Sage mirror to use, e.g., http://www.cecm.sfu.ca/sage/src/"
         echo "                Mutually exclusive to SAGELOCATION"
