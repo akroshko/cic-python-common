@@ -54,7 +54,7 @@ msg () {
 ask_yn () {
     local YN=
     while [[ "$YN" != 'y' && "$YN" != 'n' ]]; do
-        while read -r -t 0;do read -r; done;
+        while read -r -t 0;do read -r; done
         read -n 1 -p "$1 (y/n)? " YN
         echo ""
     done
@@ -169,7 +169,7 @@ fetch-build-sage () {
             MAKE='make -j4' time make
         fi
         # TODO: option to just finalize
-        while read -r -t 0;do read -r; done;
+        while read -r -t 0;do read -r; done
         msg "Sage installed. Answer 'y' to finalize installation or 'n' to quit."
         ask_yn
         local YN2=$?
