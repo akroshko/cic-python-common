@@ -5,7 +5,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Jan 19 2017
-# Version: 20181022
+# Version: 20190222
 # URL: https://github.com/akroshko/python-stdlib-personal
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,25 +28,18 @@ import dbus
 # TODO: make this a system wide importable constant
 zathura_extension_patterns=['.*\.djvu$','.*\.pdf$']
 
-# TODO: get rid of the test stuff
 def main(argv):
-    fh = open(os.path.expanduser('~/zathuratest.txt'),'w')
     # enumerate zathura instances
     bus = dbus.SessionBus()
     zathura_names = [n for n in bus.list_names() if 'zathura' in n]
-    fh.write(str(zathura_names))
-    fh.write('\n')
     proper_dbusname = None
     for dbusname in zathura_names:
         zathura_bus = bus.get_object(dbusname,'/org/pwmt/zathura')
         zathura_properties = dbus.Interface(zathura_bus,'org.freedesktop.DBus.Properties')
         properties = zathura_properties.GetAll('org.pwmt.zathura')
-        fh.write(properties['filename'])
-        fh.write('\n')
-        fh.write(str(argv))
-        fh.write('\n')
         if properties['filename'] == argv[1]:
             proper_dbusname = dbusname
+    current_page = properties['pagenumber']
     zathura_bus = bus.get_object(proper_dbusname,'/org/pwmt/zathura')
     # now get the directory of the one
     thedirname = os.path.dirname(argv[1])
@@ -57,12 +50,8 @@ def main(argv):
         listoffiles = getfiles_by_mtime(thedirname,zathura_extension_patterns)
     else:
         listoffiles = getfiles_by_name(thedirname,zathura_extension_patterns)
-    fh.write(str(listoffiles))
-    fh.write('\n')
     # get position of current file in list
     current_position = listoffiles.index(thefilename)
-    fh.write(str(current_position))
-    fh.write('\n')
     # get next/previous file in list
     if '--bytime' in argv:
         # next generally means older
@@ -78,17 +67,10 @@ def main(argv):
     newindex = newindex % len(listoffiles)
     newfile = listoffiles[newindex]
     # open the new file
-    fh.write('Trying to open!!!')
-    fh.write('\n')
-    fh.flush()
     openmeth = zathura_bus.get_dbus_method('OpenDocument','org.pwmt.zathura')
-    openmeth(os.path.join(thedirname,newfile),'',0)
-    fh.write('Finished successfully')
-    fh.write('\n')
-    fh.close()
+    openmeth(os.path.join(thedirname,newfile),'',current_page)
 
 # TODO: the following functions are terrible python code
-
 # https://stackoverflow.com/questions/168409/how-do-you-get-a-directory-listing-sorted-by-creation-date-in-python
 def getfiles_by_mtime(dirpath,patterns):
     a = [s for s in os.listdir(dirpath)
