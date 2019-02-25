@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """ This file is used by zathura to go through files in a directory by alphabetic order or modification time. """
-# Copyright (C) 2017-2018, Andrew Kroshko, all rights reserved.
+# Copyright (C) 2017-2019, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>

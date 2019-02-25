@@ -3,7 +3,7 @@
 # but often copied elsewhere.
 # DO NOT EDIT DIRECTLY IF NOT IN python-stdlib-personal
 
-# Copyright (C) 2016-2018, Andrew Kroshko, all rights reserved.
+# Copyright (C) 2016-2019, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>

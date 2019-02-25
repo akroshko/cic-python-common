@@ -3,7 +3,7 @@
 """A standard set of utility and system administration functions."""
 # DO NOT EDIT DIRECTLY IF NOT IN python-stdlib-personal, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/python-stdlib-personal
 
-# Copyright (C) 2015-2018, Andrew Kroshko, all rights reserved.
+# Copyright (C) 2015-2019, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
