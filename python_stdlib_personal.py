@@ -1109,7 +1109,7 @@ def collapse_backslashes(string):
         The new string.
     """
     while True:
-        new_string = re.sub(r'\\\\',r'\\',string)
+        new_string = re.sub(ur'\\\\',ur'\\',string)
         if string == new_string:
             return new_string
         else:
@@ -1128,7 +1128,7 @@ def collapse_slashes(string):
         The new string.
     """
     while True:
-        new_string = re.sub(r'//',r'/',string)
+        new_string = re.sub(ur'//',ur'/',string)
         if string == new_string:
             return new_string
         else:
