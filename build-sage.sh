@@ -105,7 +105,7 @@ fetch-build-sage () {
         fi
         return 1
     fi
-    sudo true || return 1
+    sudo true || { echo "Failed to sudo!"; return 1; }
     if [[ $@ != *"--finalize"* ]]; then
         sudo apt-get update
         sudo apt-get install gcc gnutls-bin gnutls-doc imagemagick libssl-dev libssl-doc libcurl4-gnutls-dev libgnutls28-dev make m4 opencl-headers perl python
