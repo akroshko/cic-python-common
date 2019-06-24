@@ -1,15 +1,17 @@
 #!/bin/bash
-# THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/python-stdlib-personal
+# build-sage.sh --- Download, build, and install the specified current version of Sage.
+
+# THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/cic-python-common
 # but often copied elsewhere.
-# DO NOT EDIT DIRECTLY IF NOT IN python-stdlib-personal
+# DO NOT EDIT DIRECTLY IF NOT IN cic-python-common
 
 # Copyright (C) 2016-2019, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Aug 09, 2018
-# Version: 20190228
-# URL: https://github.com/akroshko/python-stdlib-personal
+# Version: 20190624
+# URL: https://github.com/akroshko/cic-python-common
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -71,17 +73,11 @@ fetch-build-sage-nice () {
 
 export DEFAULT_SAGEVERSION="8.4"
 export DEFAULT_SAGEVERSIONMD5="8f883a26f6ff2482b415151b82e22548"
-# export DEFAULT_SAGEVERSION="8.3"
-# export DEFAULT_SAGEVERSIONMD5="32b5eddff38f8215093b9c645763c904"
-# TODO: using older version of Sage for compatibility
-# export DEFAULT_SAGEVERSION="8.0"
-# export DEFAULT_SAGEVERSIONMD5="93bdd128991e9144c4b137d3d6655065"
+export DEFAULT_SAGEMIRROR="http://www.cecm.sfu.ca/sage/src/"
 
-# TODO: reverse these...
 fetch-build-sage () {
-    # fetch and compile current version of sage
+    # fetch and compile the specified current version of sage
     # usage: use --finalize to finalize the setup
-    # XXXX: need to set sage variables elsewhere
     # TODO: check for valid installation
     if [[ -z "$SAGEVERSION" || -z "$SAGEVERSIONMD5" ]]; then
         msg "Using default of Sage version $DEFAULT_SAGEVERSION with an md5 checksum of $DEFAULT_SAGEVERSIONMD5"
@@ -90,15 +86,15 @@ fetch-build-sage () {
         local SAGEVERSIONMD5="$DEFAULT_SAGEVERSIONMD5"
     fi
     if [[ -n "$SAGEMIRROR" && -n "$SAGELOCATION" ]];then
-       yell "Cannot specify both SAGEMIRROR and SAGELOCATION at the same time!!!"
+        yell "Cannot specify both SAGEMIRROR and SAGELOCATION at the same time!!!"
     elif [[ -z "$SAGEMIRROR" ]]; then
-        local SAGEMIRROR="http://www.cecm.sfu.ca/sage/src/"
+        local SAGEMIRROR="$DEFAULT_SAGEMIRROR"
     elif [[ -z "$SAGELOCATION" ]]; then
         # TODO: put this somewhere else and check for errors
         local SAGELOCATION="$PYMATHDBTMP/"
     fi
-    if [[ -d /opt/sage-"$SAGEVERSION" && $@ != *"--finalize"* ]]; then
-        if /opt/sage-"$SAGEVERSION"/sage --version; then
+    if [[ -d "/opt/sage-$SAGEVERSION" && $@ != *"--finalize"* ]]; then
+        if "/opt/sage-$SAGEVERSION/sage" --version; then
             warn "/opt/sage-$SAGEVERSION already present and appears functional"
         else
             yell "/opt/sage-$SAGEVERSION present but appears non-functional"
@@ -115,19 +111,14 @@ fetch-build-sage () {
             sudo apt-get install ocl-icd-opencl-dev --no-install-recommends
         fi
         pushd . >/dev/null
-        if [[ -e "${SAGELOCATION}/sage-${SAGEVERSION}.tar.gz" ]]; then
+        if [[ -e "$SAGELOCATION/sage-$SAGEVERSION.tar.gz" ]]; then
             cd "$SAGELOCATION"
             msg "Sage tarball already found in standard location!"
         else
-            # TODO: put into ~/tmp for more universal use
-            # TODO: proper error message if md5sum is not good
-            if [[ ! -e "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" || ! $(md5sum "$HOME/tmp/sage-download/sage-${SAGEVERSION}.tar.gz" | cut -d' ' -f1) == "$SAGEVERSIONMD5" ]]; then
+            if [[ ! -e "$HOME/tmp/sage-download/sage-$SAGEVERSION.tar.gz" || ! $(md5sum "$HOME/tmp/sage-download/sage-$SAGEVERSION.tar.gz" | cut -d' ' -f1) == "$SAGEVERSIONMD5" ]]; then
                 msg "Downloading Sagemath tarball!"
                 mkdir -p "$HOME/tmp/sage-download"
                 cd "$HOME/tmp/sage-download"
-                # should I delete this?
-                # TODO: does the tarball already exist?
-                #       do not delete directory in this case
                 wget -O "sage-$SAGEVERSION.tar.gz" "$SAGEMIRROR/sage-$SAGEVERSION.tar.gz"
                 msg "Finished downloading!"
             else
@@ -135,7 +126,7 @@ fetch-build-sage () {
                 cd "$HOME/tmp/sage-download"
             fi
         fi
-        MD5SUMCURRENT=$(md5sum sage-"$SAGEVERSION".tar.gz | cut -d' ' -f1)
+        MD5SUMCURRENT=$(md5sum "sage-$SAGEVERSION.tar.gz" | cut -d' ' -f1)
         echo "\"$MD5SUMCURRENT\" should be \"$SAGEVERSIONMD5\""
         if [[ "$MD5SUMCURRENT" != "$SAGEVERSIONMD5" ]]; then
             yell "md5 sum incorrect!"
@@ -147,20 +138,20 @@ fetch-build-sage () {
         if [[ -d "sage-$SAGEVERSION" ]]; then
             rm -rf "sage-$SAGEVERSION"
         fi
-        tar xvzf "sage-${SAGEVERSION}.tar.gz"
+        tar xvzf "sage-$SAGEVERSION.tar.gz"
         # check installation
         msg "Sage unpacked.  Answer 'y' to move installation directory to /opt and continue with build or 'n' to quit."
         ask_yn
         local YN=$?
         if [[ "$YN" == 0 ]]; then
             sudo mkdir -p /opt
-            sudo mv "./sage-${SAGEVERSION}" /opt
-            cd "/opt/sage-${SAGEVERSION}"
+            sudo mv "./sage-$SAGEVERSION" /opt
+            cd "/opt/sage-$SAGEVERSION"
         else
             popd >/dev/null
             return 1
         fi
-        # make sure I don't overload my underpowered portable computers
+        # options that help make sure I don't overload my underpowered portable computers
         if [[ $@ == *"-j1"* ]]; then
             MAKE='make -j1' time make
         elif [[ $@ == *"-j2"* ]]; then
@@ -168,7 +159,6 @@ fetch-build-sage () {
         else
             MAKE='make -j4' time make
         fi
-        # TODO: option to just finalize
         while read -r -t 0;do read -r; done
         msg "Sage installed. Answer 'y' to finalize installation or 'n' to quit."
         ask_yn
@@ -176,11 +166,8 @@ fetch-build-sage () {
     else
         local YN2=0
         pushd . >/dev/null
-        cd "/opt/sage-${SAGEVERSION}"
+        cd "/opt/sage-$SAGEVERSION"
     fi
-    # TODO: make sure I can rerun this if necesssary
-    # TODO: make an upgrade, find out if this does not work, make sure it does
-    # TODO: possibly upgrade twisted
     if [[ "$YN2" == 0 ]]; then
         msg "Running Sage, manually exit when done"
         ./sage
@@ -194,10 +181,10 @@ fetch-build-sage () {
         if [[ -e /usr/local/bin/sage ]]; then
             sudo rm /usr/local/bin/sage
         fi
-        if [[ -e "/opt/sage-${SAGEVERSION}/sage" ]]; then
-            sudo ln -s "/opt/sage-${SAGEVERSION}/sage" /usr/local/bin
+        if [[ -e "/opt/sage-$SAGEVERSION/sage" ]]; then
+            sudo ln -s "/opt/sage-$SAGEVERSION/sage" /usr/local/bin
         else
-            yell "Cannot find /opt/sage-${SAGEVERSION}/sage so not symlinkiing to /usr/local/bin/sage"
+            yell "Cannot find /opt/sage-$SAGEVERSION/sage so not symlinkiing to /usr/local/bin/sage"
         fi
     else
         echo "Not finalizing!  Can be done later with --finalize"
@@ -225,19 +212,12 @@ fetch-build-sage-packages () {
     ./sage -pip install --upgrade psycopg2-binary
     ./sage -pip install --upgrade pycurl
     ./sage -pip install --upgrade pyopenssl
-    # ./sage -pip install --upgrade rlipython
     ./sage -pip install --upgrade readline
-    # install sage mode
-    # TODO: remove, does not seem to exist, try melpa
-    # ./sage -i sage_mode
-    # TODO: I can replace most of my keys now
-    # echo "Setting up rlipython!"
-    # ./sage -ipython -c "import rlipython;rlipython.install()"
 }
 
 main () {
     # TODO: this might be an issue with just -h in this way at some point
-    if [[ $@ != *"--install"* || $@ == *"--help"* || $@ == *"-h"* ]]; then
+    if [[ $@ != *" --install"* || $@ == *" --help"* || $@ == *" -h"* ]]; then
         echo "Usage: "
         echo ""
         echo "--install"

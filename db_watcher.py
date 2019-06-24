@@ -1,15 +1,15 @@
 #!/usr/local/bin/sage -python
 # -*- coding: iso-8859-15 -*-
 """."""
-# DO NOT EDIT DIRECTLY IF NOT IN python-stdlib-personal, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/python-stdlib-personal
+# DO NOT EDIT DIRECTLY IF NOT IN cic-python-common, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/cic-python-common
 
-# Copyright (C) 2018, Andrew Kroshko, all rights reserved.
+# Copyright (C) 2018-2019, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Aug 09, 2018
-# Version: 20190228
-# URL: https://github.com/akroshko/python-stdlib-personal
+# Version: 20190624
+# URL: https://github.com/akroshko/cic-python-common
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@ exec('from ' + sys.argv[2] + ' import *')
 # TODO: settings here fix
 # from experiment_common import *
 
-from defaults import *
+from db_defaults import *
 try:
-    from defaults_local import *
+    from db_defaults_local import *
 except ImportError:
     pass
 

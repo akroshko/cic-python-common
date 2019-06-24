@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+"""This code displays a set of different terminal colors and escape
+sequences possible from a Python script.
+
+"""
+
 import os,sys
 terse = "-t" in sys.argv[1:] or "--terse" in sys.argv[1:]
 write = sys.stdout.write

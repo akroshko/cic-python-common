@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 """A standard set of utility and system administration functions."""
-# DO NOT EDIT DIRECTLY IF NOT IN python-stdlib-personal, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/python-stdlib-personal
+# DO NOT EDIT DIRECTLY IF NOT IN cic-python-common, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/cic-python-common
 
 # Copyright (C) 2015-2019, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Wed Nov 15, 2017
-# Version: 20190228
-# URL: https://github.com/akroshko/python-stdlib-personal
+# Version: 20190624
+# URL: https://github.com/akroshko/cic-python-common
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -80,10 +80,10 @@ def tic(label=None):
 def toc(label=None,level=0):
     if label is None:
         thetime = TT() - TICTOCLABELS['default']
-        print ("Timing: %.2fs" % thetime)
+        print("Timing: %.2fs" % thetime)
     else:
         thetime = TT() - TICTOCLABELS[label]
-        print ''.join([' ']*level) + "---- " + label + (": %.2fs" % thetime)
+        print(''.join([' ']*level) + "---- " + label + (": %.2fs" % thetime))
 
 @All(globals())
 def filter_list_of_tuples_invalid(list_of_tuples):
@@ -102,10 +102,10 @@ def ax_make_symlog_y(ax,ythresh,xmin,xmax,ymin,ymax):
         print "Setting symlog with ", ythresh
         ax.set_yscale('symlog',linthreshy=ythresh)
         if ymax > ythresh:
-            print "Top symlog"
+            print("Top symlog")
             ax.hlines(ythresh,xmin,xmax,color='r')
         if ymin < -ythresh:
-            print "Bottom symlog"
+            print("Bottom symlog")
             ax.hlines(-ythresh,xmin,xmax,color='r')
 
 @All(globals())
@@ -121,7 +121,7 @@ def fig_save_fig(fig,fullpath,dpi=150):
     os_makedirs(os.path.dirname(fullpath))
     # disable transparency for efficiency
     fig.savefig(fullpath,dpi=dpi,bbox_inches='tight',transparent=False)
-    print "Saved figure to: " + fullpath
+    print("Saved figure to: " + fullpath)
     # TODO: close fig....
 
 @All(globals())
@@ -136,7 +136,7 @@ def os_makedirs(path):
         try:
             os.makedirs(path)
         except OSError,e:
-            print e
+            print(e)
 
 @All(globals())
 def pymath_default_imports(theglobals,thelocals):
@@ -305,10 +305,10 @@ def extract_flags_selecting_dictionary_key(argv,thedict):
 
 @All(globals())
 def print_full_exception(message=None):
-    print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     # TODO: can I print my e automatically?
     if message:
-        print message
+        print(message)
     traceback.print_exc()
 
 @All(globals())
@@ -347,6 +347,7 @@ def check_python_sage_project_sanity(project_path):
     if rc != 1:
         print "Python compile return code: ", rc
         return 1
+    print("==================== 2")
     # looping twice because orphaned is faster and should be fixed first
     # this is special for sage, might want to double compile python because that is fast
     for path,subdirs,files in os.walk(project_path):
@@ -361,7 +362,7 @@ def check_python_sage_project_sanity(project_path):
                 command_list=['sage','-preparse',os.path.join(path,filename)]
                 if (not (os.path.exists(os.path.join(path,filename)+'.py'))) or (os.path.getmtime(os.path.join(path,filename)) > os.path.getmtime(os.path.join(path,filename)+'.py')):
                     # TODO: check timestamps for sage preparser
-                    print command_list
+                    print(command_list)
                     p = subprocess.Popen(command_list)
                     p.communicate()
                     if p.returncode != 0:
@@ -425,7 +426,7 @@ def open_database(connection,cursor):
             # TODO: password in args?
             conn_string = "dbname='pymathdb' user=" + os.getenv('PYMATHDBUSER') + " port='" + port + "' host='" + dbhostname + "' password='" + os.getenv('PYMATHDBPASSWORD') + "'"
             # print the connection string we will use to connect
-            print "Connecting to database:\n  --> %s" % (conn_string)
+            print("Connecting to database:\n  --> %s" % (conn_string))
             # get a connection, if a connect cannot be made an exception will be raised here
             connection = psycopg2.connect(conn_string)
             # should also be disabled in database config
@@ -435,8 +436,8 @@ def open_database(connection,cursor):
             # conn.cursor will return a cursor object, you can use this cursor to perform queries
             cursor = connection.cursor()
         except Exception, e:
-            print "Unable to connect to the database"
-            print e
+            print("Unable to connect to the database")
+            print(e)
             # TODO: do I really want to bail on failed connection?
             sys.exit(1)
     return connection,cursor

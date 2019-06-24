@@ -1,15 +1,15 @@
 #!/usr/local/bin/sage -python
 # -*- coding: iso-8859-15 -*-
 """."""
-# DO NOT EDIT DIRECTLY IF NOT IN python-stdlib-personal, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/python-stdlib-personal
+# DO NOT EDIT DIRECTLY IF NOT IN cic-python-common, THIS FILE IS ORIGINALLY FROM https://github.com/akroshko/cic-python-common
 
-# Copyright (C) 2018, Andrew Kroshko, all rights reserved.
+# Copyright (C) 2018-2019, Andrew Kroshko, all rights reserved.
 #
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Aug 09, 2018
-# Version: 20190228
-# URL: https://github.com/akroshko/python-stdlib-personal
+# Version: 20190624
+# URL: https://github.com/akroshko/cic-python-common
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@ exec('from ' + sys.argv[2] + ' import *')
 
 import Queue
 
-from defaults import *
+from db_defaults import *
 try:
-    from defaults_local import *
+    from db_defaults_local import *
 except ImportError:
     pass
 
@@ -108,7 +108,7 @@ def db_solver_worker(q,solve_number,selected_solver,incoming_properties_dict,red
         incoming_properties_keys   = selected_solver[0][3]
         outgoing_properties_keys   = selected_solver[0][4]
         if verbose_flag:
-            print "--------------------"
+            print("--------------------")
             pprint(ode_properties)
             pprint(method_properties)
             pprint(incoming_properties_dict)
@@ -134,7 +134,7 @@ def db_solver_worker(q,solve_number,selected_solver,incoming_properties_dict,red
     except Exception,e:
         # TODO: to stderr and/or log
         # TODO: optionally send poison pill back to kill things
-        print str(e)
+        print(str(e))
         # TODO: does this go to appropriate place?  print differentialy
         traceback.print_exc()
         # send email/text/warning on a secondary channel
@@ -214,7 +214,7 @@ def main(argv):
         selected=CURSOR.fetchall()
         CONNECTION.commit()
         # build the select strings first
-        print "==== "  + THEHOSTNAME + ": Building select strings and incoming properties ===="
+        print("==== "  + THEHOSTNAME + ": Building select strings and incoming properties ====")
         sys.stdout.flush()
         ##########
         dbtable_dict={}
@@ -244,7 +244,7 @@ def main(argv):
             incoming_properties_dict=dict(zip(incoming_properties_keys,incoming_properties_values))
             selected_solver_dict[solve_number]=(selected_solver,incoming_properties_dict)
         CONNECTION.commit()
-        print "==== " + THEHOSTNAME + ": Starting solution =========="
+        print("==== " + THEHOSTNAME + ": Starting solution ==========")
         sys.stdout.flush()
         for solve_number in selected_solver_dict:
             if solve_number in solve_number_list:
@@ -256,9 +256,9 @@ def main(argv):
                 POOL.apply_async(db_solver_worker,(q,solve_number,selected_solver_dict[solve_number][0],selected_solver_dict[solve_number][1],SPECIFIC_LOGDIR))
             solve_number_list.append(solve_number)
         ##########
-        print "==== "  + THEHOSTNAME + ": Processing solutions ===="
+        print("==== "  + THEHOSTNAME + ": Processing solutions ====")
         # TODO: add some text to explain this
-        print len(solve_number_list)
+        print(len(solve_number_list))
         sys.stdout.flush()
         update_strings=[]
         # TODO: this is many statements pasted as one right now, could be made faster into fewer statements
@@ -286,20 +286,20 @@ def main(argv):
                 update_batch_table_string="UPDATE " + batch_table + " SET done=TRUE WHERE solve_number=" + solve_number_str + ";"
                 update_strings.append(update_batch_table_string)
             except Queue.Empty:
-                print "Queue empty..."
+                print("Queue empty...")
                 sys.stdout.flush()
                 # if queue times out and processors not all working, try and get more work
                 if len(solve_number_list) <= PROCESSES and '--serial' not in sys.argv:
                     # this should not take too long... but maybe add timeout...
                     # update before breaking
                     if update_strings != []:
-                        print "Updating..."
+                        print("Updating...")
                         sys.stdout.flush()
                         CURSOR.execute(''.join(update_strings))
-                        print "Committing..."
+                        print("Committing...")
                         sys.stdout.flush()
                         CONNECTION.commit()
-                        print "Done committing."
+                        print("Done committing.")
                         sys.stdout.flush()
                         update_strings=[]
                     break
@@ -312,13 +312,13 @@ def main(argv):
             print THEHOSTNAME, "Queued for update:    ", len(update_strings)/2
             sys.stdout.flush()
             if len(update_strings) > MAXUPDATESTRINGS:
-                print "Updating..."
+                print("Updating...")
                 sys.stdout.flush()
                 CURSOR.execute(''.join(update_strings))
-                print "Committing..."
+                print("Committing...")
                 sys.stdout.flush()
                 CONNECTION.commit()
-                print "Done committing."
+                print("Done committing.")
                 sys.stdout.flush()
                 update_strings=[]
             # TODO: I think a bare minimum sleep is needed avoid spin locking
@@ -333,8 +333,8 @@ def main(argv):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        print "PROCESSES: "        + str(PROCESSES)
-        print "MAXTASKSPERCHILD: " + str(MAXTASKSPERCHILD)
+        print("PROCESSES: "        + str(PROCESSES))
+        print("MAXTASKSPERCHILD: " + str(MAXTASKSPERCHILD))
         main(sys.argv)
         POOL.close()
         POOL.join()

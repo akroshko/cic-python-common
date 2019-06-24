@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# some very simple testes of pymath functionality
+
 import os,sys
 from pymath_common import *
 pymath_default_imports(globals(),locals())
