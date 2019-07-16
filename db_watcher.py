@@ -57,7 +57,7 @@ def main(argv):
     CURSOR.execute(selected_count_string)
     selected=CURSOR.fetchall()
     CONNECTION.commit()
-    print "Number of problems: ", selected[0][0]
+    print("Number of problems: %s" % selected[0][0])
     # TODO: I should just count in database rather than moving whole thing...
     while True:
         # is amount of work to partition less than LIMIT*hosts, only reduce once
@@ -71,7 +71,7 @@ def main(argv):
                 # only reduce once, split up so each host gets assigned fourth times more on average
                 # allow assigning only 1 task for cases with small numbers of long running jobs
                 LIMITPERSEGMENT = max(TYPICAL_CORES,len(unassigned)/(len(HOSTLIST)*NOMINAL_PARITIONS))
-                print "Reduced limit per segment to: ", LIMITPERSEGMENT
+                print("Reduced limit per segment to: %s" % LIMITPERSEGMENT)
                 reductions += 1
         for host in HOSTLIST:
             selected_batch_string="SELECT table_name,solve_number FROM " + batch_table + " WHERE hostname='" + host + "' AND done=FALSE;"

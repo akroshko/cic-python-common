@@ -99,7 +99,7 @@ things that are unplottable like None are filtered out.
 @All(globals())
 def ax_make_symlog_y(ax,ythresh,xmin,xmax,ymin,ymax):
     if ymin < -ythresh or ymax > ythresh:
-        print "Setting symlog with ", ythresh
+        print("Setting symlog with %s" % ythresh)
         ax.set_yscale('symlog',linthreshy=ythresh)
         if ymax > ythresh:
             print("Top symlog")
@@ -339,13 +339,13 @@ def check_python_sage_project_sanity(project_path):
                 if filename.endswith(compiled_pattern):
                     if not os.path.exists(os.path.join(path,filename[:-len(compiled_pattern)]+base_pattern)):
                         # TODO: ask to delete
-                        print "Orphaned compiled file: ", os.path.join(path,filename)
+                        print("Orphaned compiled file: %s" % os.path.join(path,filename))
                         return 1
     # check all python scripts
     # TODO: make sure regex works, still listing these directories...
     rc = compileall.compile_dir(project_path,rx=re.compile('.*/(\.git|\.svn|\.hg|\.ropeproject)/.*'))
     if rc != 1:
-        print "Python compile return code: ", rc
+        print("Python compile return code: %s" % rc)
         return 1
     print("==================== 2")
     # looping twice because orphaned is faster and should be fixed first
@@ -366,7 +366,7 @@ def check_python_sage_project_sanity(project_path):
                     p = subprocess.Popen(command_list)
                     p.communicate()
                     if p.returncode != 0:
-                        print "Failed to compile: ", os.path.join(path,filename)
+                        print("Failed to compile: %s" % os.path.join(path,filename))
                         return 1
             # TODO: handle python 3 etc
     return 0

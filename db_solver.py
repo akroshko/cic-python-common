@@ -306,10 +306,10 @@ def main(argv):
             # TODO: make sure commit occurs frequently, change based on batch size and such
             #       should know size of segment too, change to segment_size - 4
             #       a timout of 20-30s might be nice
-            print THEHOSTNAME, "Solve number list: ", len(solve_number_list)
+            print(THEHOSTNAME, "Solve number list: %s" % len(solve_number_list))
             # XXXX: divided by two because it confusing not to have these two numbers match
             #       spaces added for readability
-            print THEHOSTNAME, "Queued for update:    ", len(update_strings)/2
+            print(THEHOSTNAME, "Queued for update:    %s" % len(update_strings)/2)
             sys.stdout.flush()
             if len(update_strings) > MAXUPDATESTRINGS:
                 print("Updating...")
