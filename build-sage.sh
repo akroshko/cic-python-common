@@ -71,8 +71,8 @@ fetch-build-sage-nice () {
     /usr/bin/nice --adjustment 20 /usr/bin/ionice -c3 fetch-build-sage
 }
 
-export DEFAULT_SAGEVERSION="8.4"
-export DEFAULT_SAGEVERSIONMD5="8f883a26f6ff2482b415151b82e22548"
+export DEFAULT_SAGEVERSION="8.8"
+export DEFAULT_SAGEVERSIONMD5="0668ad4c8e93945c68d27e2400c5ee6e"
 export DEFAULT_SAGEMIRROR="http://www.cecm.sfu.ca/sage/src/"
 
 fetch-build-sage () {
@@ -217,7 +217,7 @@ fetch-build-sage-packages () {
 
 main () {
     # TODO: this might be an issue with just -h in this way at some point
-    if [[ $@ != *" --install"* || $@ == *" --help"* || $@ == *" -h"* ]]; then
+    if [[ $@ != *"--install"* || $@ == *"--help"* || $@ == *"-h"* ]]; then
         echo "Usage: "
         echo ""
         echo "--install"
@@ -248,11 +248,11 @@ main () {
         echo ""
         echo "Environment variables:"
         echo ""
-        echo "SAGEVERSION:    The Sage version to install, (default $DEFAULT_SAGEVERSION)"
+        echo "SAGEVERSION:    The Sage version to install, (default $DEFAULT_SAGEVERSION, current $SAGEVERSION)"
         echo "                Must specific SAGEVERSIONMD5 with SAGEVERSION"
-        echo "SAGEVERSIONMD5: The md5 checksum of the Sage version to install, (default $DEFAULT_SAGEVERSIONMD5)"
+        echo "SAGEVERSIONMD5: The md5 checksum of the Sage version to install, (default $DEFAULT_SAGEVERSIONMD5, current $SAGEVERSIONMD5)"
         echo "                Must specific SAGEVERSION with SAGEVERSIONMD5"
-        echo "SAGEMIRROR:     The url of the Sage mirror to use, e.g., http://www.cecm.sfu.ca/sage/src/"
+        echo "SAGEMIRROR:     The url of the Sage mirror to use, (default $DEFAULT_SAGEMIRROR, current $SAGEMIRROR)"
         echo "                Mutually exclusive to SAGELOCATION"
         echo "SAGELOCATION:   The directory in the filesystem where the Sage tarball is located"
         echo "                Mutually exclusive to SAGEMIRROR"
