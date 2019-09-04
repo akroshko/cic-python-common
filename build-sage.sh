@@ -57,7 +57,7 @@ ask_yn () {
     local YN=
     while [[ "$YN" != 'y' && "$YN" != 'n' ]]; do
         while read -r -t 0;do read -r; done
-        read -n 1 -p "$1 (y/n)? " YN
+        read -n 1 -s -r -p "$1 (y/n)? " YN
         echo ""
     done
     if [[ "$YN" == 'y' ]]; then
