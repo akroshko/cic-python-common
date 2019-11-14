@@ -60,9 +60,9 @@ ask_yn () {
         read -n 1 -s -r -p "$1 (y/n)? " YN
         echo ""
     done
-    if [[ "$YN" == 'y' ]]; then
+    if [[ "$YN" == 'y' ]];then
         return 0
-    elif [[ "$YN" == 'n' ]]; then
+    elif [[ "$YN" == 'n' ]];then
         return 1
     fi
 }
@@ -71,51 +71,51 @@ fetch-build-sage-nice () {
     /usr/bin/nice --adjustment 20 /usr/bin/ionice -c3 fetch-build-sage
 }
 
-export DEFAULT_SAGEVERSION="8.8"
-export DEFAULT_SAGEVERSIONMD5="0668ad4c8e93945c68d27e2400c5ee6e"
-export DEFAULT_SAGEMIRROR="http://www.cecm.sfu.ca/sage/src/"
+export DEFAULT_SAGEVERSION='8.8'
+export DEFAULT_SAGEVERSIONMD5='0668ad4c8e93945c68d27e2400c5ee6e'
+export DEFAULT_SAGEMIRROR='http://www.cecm.sfu.ca/sage/src/'
 
 fetch-build-sage () {
     # fetch and compile the specified current version of sage
     # usage: use --finalize to finalize the setup
     # TODO: check for valid installation
-    if [[ -z "$SAGEVERSION" || -z "$SAGEVERSIONMD5" ]]; then
+    if [[ -z "$SAGEVERSION" || -z "$SAGEVERSIONMD5" ]];then
         msg "Using default of Sage version $DEFAULT_SAGEVERSION with an md5 checksum of $DEFAULT_SAGEVERSIONMD5"
         # update for every new version sage
         local SAGEVERSION="$DEFAULT_SAGEVERSION"
         local SAGEVERSIONMD5="$DEFAULT_SAGEVERSIONMD5"
     fi
     if [[ -n "$SAGEMIRROR" && -n "$SAGELOCATION" ]];then
-        yell "Cannot specify both SAGEMIRROR and SAGELOCATION at the same time!!!"
-    elif [[ -z "$SAGEMIRROR" ]]; then
+        yell 'Cannot specify both SAGEMIRROR and SAGELOCATION at the same time!!!'
+    elif [[ -z "$SAGEMIRROR" ]];then
         local SAGEMIRROR="$DEFAULT_SAGEMIRROR"
-    elif [[ -z "$SAGELOCATION" ]]; then
+    elif [[ -z "$SAGELOCATION" ]];then
         # TODO: put this somewhere else and check for errors
         local SAGELOCATION="$PYMATHDBTMP/"
     fi
-    if [[ -d "/opt/sage-$SAGEVERSION" && $@ != *"--finalize"* ]]; then
-        if "/opt/sage-$SAGEVERSION/sage" --version; then
+    if [[ -d "/opt/sage-$SAGEVERSION" && $@ != *'--finalize'* ]];then
+        if "/opt/sage-$SAGEVERSION/sage" --version;then
             warn "/opt/sage-$SAGEVERSION already present and appears functional"
         else
             yell "/opt/sage-$SAGEVERSION present but appears non-functional"
         fi
         return 1
     fi
-    sudo true || { echo "Failed to sudo!"; return 1; }
-    if [[ $@ != *"--finalize"* ]]; then
+    sudo true || { echo 'Failed to sudo!'; return 1; }
+    if [[ $@ != *"--finalize"* ]];then
         sudo apt-get update
         sudo apt-get install gcc gnutls-bin gnutls-doc imagemagick libssl-dev libssl-doc libcurl4-gnutls-dev libgnutls28-dev make m4 opencl-headers perl python
-        if [[ ! $@ == *"--no-x11"* ]]; then
+        if [[ ! $@ == *"--no-x11"* ]];then
             sudo apt-get install dvipng ocl-icd-opencl-dev tk8.6-dev texlive
         else
             sudo apt-get install ocl-icd-opencl-dev --no-install-recommends
         fi
         pushd . >/dev/null
-        if [[ -e "$SAGELOCATION/sage-$SAGEVERSION.tar.gz" ]]; then
+        if [[ -e "$SAGELOCATION/sage-$SAGEVERSION.tar.gz" ]];then
             cd "$SAGELOCATION"
             msg "Sage tarball already found in standard location!"
         else
-            if [[ ! -e "$HOME/tmp/sage-download/sage-$SAGEVERSION.tar.gz" || ! $(md5sum "$HOME/tmp/sage-download/sage-$SAGEVERSION.tar.gz" | cut -d' ' -f1) == "$SAGEVERSIONMD5" ]]; then
+            if [[ ! -e "$HOME/tmp/sage-download/sage-$SAGEVERSION.tar.gz" || ! $(md5sum "$HOME/tmp/sage-download/sage-$SAGEVERSION.tar.gz" | cut -d' ' -f1) == "$SAGEVERSIONMD5" ]];then
                 msg "Downloading Sagemath tarball!"
                 mkdir -p "$HOME/tmp/sage-download"
                 cd "$HOME/tmp/sage-download"
@@ -128,14 +128,14 @@ fetch-build-sage () {
         fi
         MD5SUMCURRENT=$(md5sum "sage-$SAGEVERSION.tar.gz" | cut -d' ' -f1)
         echo "\"$MD5SUMCURRENT\" should be \"$SAGEVERSIONMD5\""
-        if [[ "$MD5SUMCURRENT" != "$SAGEVERSIONMD5" ]]; then
+        if [[ "$MD5SUMCURRENT" != "$SAGEVERSIONMD5" ]];then
             yell "md5 sum incorrect!"
             popd >/dev/null
             return 1
         fi
         msg "md5 sum correct!"
         msg "Unpacking!"
-        if [[ -d "sage-$SAGEVERSION" ]]; then
+        if [[ -d "sage-$SAGEVERSION" ]];then
             rm -rf "sage-$SAGEVERSION"
         fi
         tar xvzf "sage-$SAGEVERSION.tar.gz"
@@ -143,7 +143,7 @@ fetch-build-sage () {
         msg "Sage unpacked.  Answer 'y' to move installation directory to /opt and continue with build or 'n' to quit."
         ask_yn
         local YN=$?
-        if [[ "$YN" == 0 ]]; then
+        if [[ "$YN" == 0 ]];then
             sudo mkdir -p /opt
             sudo mv "./sage-$SAGEVERSION" /opt
             cd "/opt/sage-$SAGEVERSION"
@@ -152,9 +152,9 @@ fetch-build-sage () {
             return 1
         fi
         # options that help make sure I don't overload my underpowered portable computers
-        if [[ $@ == *"-j1"* ]]; then
+        if [[ $@ == *"-j1"* ]];then
             MAKE='make -j1' time make
-        elif [[ $@ == *"-j2"* ]]; then
+        elif [[ $@ == *"-j2"* ]];then
             MAKE='make -j2' time make
         else
             MAKE='make -j4' time make
@@ -168,20 +168,20 @@ fetch-build-sage () {
         pushd . >/dev/null
         cd "/opt/sage-$SAGEVERSION"
     fi
-    if [[ "$YN2" == 0 ]]; then
+    if [[ "$YN2" == 0 ]];then
         msg "Running Sage, manually exit when done"
         ./sage
         # build packages
         fetch-build-sage-packages
         # make docs
-        if [[ ! $@ == *"--no-x11"* ]]; then
+        if [[ ! $@ == *"--no-x11"* ]];then
             make doc
         fi
         # TODO: overwrite binary, but ask first
-        if [[ -e /usr/local/bin/sage ]]; then
+        if [[ -e /usr/local/bin/sage ]];then
             sudo rm /usr/local/bin/sage
         fi
-        if [[ -e "/opt/sage-$SAGEVERSION/sage" ]]; then
+        if [[ -e "/opt/sage-$SAGEVERSION/sage" ]];then
             sudo ln -s "/opt/sage-$SAGEVERSION/sage" /usr/local/bin
         else
             yell "Cannot find /opt/sage-$SAGEVERSION/sage so not symlinkiing to /usr/local/bin/sage"
@@ -217,7 +217,7 @@ fetch-build-sage-packages () {
 
 main () {
     # TODO: this might be an issue with just -h in this way at some point
-    if [[ $@ != *"--install"* || $@ == *"--help"* || $@ == *"-h"* ]]; then
+    if [[ $@ != *"--install"* || $@ == *"--help"* || $@ == *"-h"* ]];then
         echo "Usage: "
         echo ""
         echo "--install"
