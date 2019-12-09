@@ -5,7 +5,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Jan 19 2017
-# Version: 20190624
+# Version: 20191209
 # URL: https://github.com/akroshko/cic-python-common
 #
 # This program is free software: you can redistribute it and/or modify

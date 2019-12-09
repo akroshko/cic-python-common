@@ -10,7 +10,7 @@
 # Author: Andrew Kroshko
 # Maintainer: Andrew Kroshko <akroshko.public+devel@gmail.com>
 # Created: Thu Aug 09, 2018
-# Version: 20190624
+# Version: 20191209
 # URL: https://github.com/akroshko/cic-python-common
 #
 # This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 # the three-fingered claw, see https://stackoverflow.com/questions/1378274/in-a-bash-script-how-can-i-exit-the-entire-script-if-a-certain-condition-occurs
 yell () {
     local NEWCOM=$(sed -r 's|'"$HOME"'|~|g' <<< "$0")
-    echo -e "${BRed}$NEWCOM${Red}: $*${Color_Off}" >&2
+    echo -e "${BRed}$NEWCOM${Red}: $*${Color_Off}" 1>&2
 }
 
 die () {
@@ -45,12 +45,12 @@ try () {
 warn () {
     # XXXX: not good because it starts up a new command, but avoids escaping slashes
     local NEWCOM=$(sed -r 's|'"$HOME"'|~|g' <<< "$0")
-    echo -e "${BYellow}$NEWCOM${Yellow}: $*${Color_Off}" >&2
+    echo -e "${BYellow}$NEWCOM${Yellow}: $*${Color_Off}" 1>&2
 }
 
 msg () {
     local NEWCOM=$(sed -r 's|'"$HOME"'|~|g' <<< "$0")
-    echo -e "${BGreen}$NEWCOM${Green}: $*${Color_Off}" >&2
+    echo -e "${BGreen}$NEWCOM${Green}: $*${Color_Off}" 1>&2
 }
 
 ask_yn () {
@@ -101,7 +101,7 @@ fetch-build-sage () {
         fi
         return 1
     fi
-    sudo true || { echo 'Failed to sudo!'; return 1; }
+    sudo true || { echo 'Failed to sudo!' 1>&2; return 1; }
     if [[ $@ != *"--finalize"* ]];then
         sudo apt-get update
         sudo apt-get install gcc gnutls-bin gnutls-doc imagemagick libssl-dev libssl-doc libcurl4-gnutls-dev libgnutls28-dev make m4 opencl-headers perl python
@@ -127,7 +127,7 @@ fetch-build-sage () {
             fi
         fi
         MD5SUMCURRENT=$(md5sum "sage-$SAGEVERSION.tar.gz" | cut -d' ' -f1)
-        echo "\"$MD5SUMCURRENT\" should be \"$SAGEVERSIONMD5\""
+        echo "\"$MD5SUMCURRENT\" should be \"$SAGEVERSIONMD5\"" 1>&2
         if [[ "$MD5SUMCURRENT" != "$SAGEVERSIONMD5" ]];then
             yell "md5 sum incorrect!"
             popd >/dev/null
@@ -136,7 +136,7 @@ fetch-build-sage () {
         msg "md5 sum correct!"
         msg "Unpacking!"
         if [[ -d "sage-$SAGEVERSION" ]];then
-            rm -rf "sage-$SAGEVERSION"
+            \rm -rf "sage-$SAGEVERSION"
         fi
         tar xvzf "sage-$SAGEVERSION.tar.gz"
         # check installation
@@ -187,7 +187,7 @@ fetch-build-sage () {
             yell "Cannot find /opt/sage-$SAGEVERSION/sage so not symlinkiing to /usr/local/bin/sage"
         fi
     else
-        echo "Not finalizing!  Can be done later with --finalize"
+        echo "Not finalizing!  Can be done later with --finalize" 1>&2
         popd >/dev/null
         return 1
     fi
@@ -218,44 +218,44 @@ fetch-build-sage-packages () {
 main () {
     # TODO: this might be an issue with just -h in this way at some point
     if [[ $@ != *"--install"* || $@ == *"--help"* || $@ == *"-h"* ]];then
-        echo "Usage: "
-        echo ""
-        echo "--install"
-        echo "  Do the installation for real."
-        echo ""
-        echo "--no-x11"
-        echo "  Do not install with X11 dependencies"
-        echo "  The main effect is that documentation will not be built"
-        echo ""
-        echo "--finalize"
-        echo "  Just finalize, trying to install optional packages"
-        echo ""
-        echo "-j1"
-        echo "  Use one process for building Sage"
-        echo "  Useful for laptops and other computers with limited computational power, memory, or thermal managment"
-        echo ""
-        echo "-j2"
-        echo "  Use two processes for building Sage"
-        echo "  Useful for dual-core desktops and quad-core computers with limited computational power, memory, or thermal managment"
-        echo ""
-        echo "-j4 (default)"
-        echo "  Use four processes for building Sage"
-        echo "  Useful for quad-core computers where -j8 is slow or leads to lockups"
-        echo ""
-        echo "-j8"
-        echo "  Use eight processes for building Sage"
-        echo "  Useful for four core/eight thread computers where it can provide an advantage"
-        echo ""
-        echo "Environment variables:"
-        echo ""
-        echo "SAGEVERSION:    The Sage version to install, (default $DEFAULT_SAGEVERSION, current $SAGEVERSION)"
-        echo "                Must specific SAGEVERSIONMD5 with SAGEVERSION"
-        echo "SAGEVERSIONMD5: The md5 checksum of the Sage version to install, (default $DEFAULT_SAGEVERSIONMD5, current $SAGEVERSIONMD5)"
-        echo "                Must specific SAGEVERSION with SAGEVERSIONMD5"
-        echo "SAGEMIRROR:     The url of the Sage mirror to use, (default $DEFAULT_SAGEMIRROR, current $SAGEMIRROR)"
-        echo "                Mutually exclusive to SAGELOCATION"
-        echo "SAGELOCATION:   The directory in the filesystem where the Sage tarball is located"
-        echo "                Mutually exclusive to SAGEMIRROR"
+        echo "Usage: " 1>&2
+        echo "" 1>&2
+        echo "--install" 1>&2
+        echo "  Do the installation for real." 1>&2
+        echo "" 1>&2
+        echo "--no-x11" 1>&2
+        echo "  Do not install with X11 dependencies" 1>&2
+        echo "  The main effect is that documentation will not be built" 1>&2
+        echo "" 1>&2
+        echo "--finalize" 1>&2
+        echo "  Just finalize, trying to install optional packages" 1>&2
+        echo "" 1>&2
+        echo "-j1" 1>&2
+        echo "  Use one process for building Sage" 1>&2
+        echo "  Useful for laptops and other computers with limited computational power, memory, or thermal managment" 1>&2
+        echo "" 1>&2
+        echo "-j2" 1>&2
+        echo "  Use two processes for building Sage" 1>&2
+        echo "  Useful for dual-core desktops and quad-core computers with limited computational power, memory, or thermal managment" 1>&2
+        echo "" 1>&2
+        echo "-j4 (default)" 1>&2
+        echo "  Use four processes for building Sage" 1>&2
+        echo "  Useful for quad-core computers where -j8 is slow or leads to lockups" 1>&2
+        echo "" 1>&2
+        echo "-j8" 1>&2
+        echo "  Use eight processes for building Sage" 1>&2
+        echo "  Useful for four core/eight thread computers where it can provide an advantage" 1>&2
+        echo "" 1>&2
+        echo "Environment variables:" 1>&2
+        echo "" 1>&2
+        echo "SAGEVERSION:    The Sage version to install, (default $DEFAULT_SAGEVERSION, current $SAGEVERSION)" 1>&2
+        echo "                Must specific SAGEVERSIONMD5 with SAGEVERSION" 1>&2
+        echo "SAGEVERSIONMD5: The md5 checksum of the Sage version to install, (default $DEFAULT_SAGEVERSIONMD5, current $SAGEVERSIONMD5)" 1>&2
+        echo "                Must specific SAGEVERSION with SAGEVERSIONMD5" 1>&2
+        echo "SAGEMIRROR:     The url of the Sage mirror to use, (default $DEFAULT_SAGEMIRROR, current $SAGEMIRROR)" 1>&2
+        echo "                Mutually exclusive to SAGELOCATION" 1>&2
+        echo "SAGELOCATION:   The directory in the filesystem where the Sage tarball is located" 1>&2
+        echo "                Mutually exclusive to SAGEMIRROR" 1>&2
     else
         fetch-build-sage "$@"
     fi
